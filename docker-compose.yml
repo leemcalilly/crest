@@ -1,0 +1,26 @@
+# The container IS the development environment: identical on macOS, Linux,
+# or a coding agent's cloud. Daily loop: docker compose up
+# Same image as .devcontainer/devcontainer.json (devcontainer-aware tools
+# get this exact environment automatically).
+name: crest
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: .devcontainer/Dockerfile
+    command: bash -c "bin/setup --skip-server && bin/dev"
+    working_dir: /rails
+    environment:
+      BINDING: "0.0.0.0"   # bind all interfaces so the published port reaches Puma
+    volumes:
+      - .:/rails
+      - bundle:/usr/local/bundle
+    ports:
+      # Host port comes from bin/up (home base 3060, scans upward if busy).
+      - "${HOST_PORT:-3060}:3000"
+    tty: true
+    stdin_open: true
+
+volumes:
+  bundle:

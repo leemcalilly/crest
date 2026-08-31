@@ -1,0 +1,38 @@
+#!/usr/bin/env bash
+# Start the containerized dev environment on the first free port at or above
+# this app's home base (crest: 3060), and say loudly which one it got.
+# Apps on the same machine use different bases, so they don't collide —
+# the upward scan handles clones/worktrees of the same app.
+# Extra args pass through to docker compose up (e.g. bin/up --build, bin/up -d).
+set -euo pipefail
+
+APP="crest"
+BASE="${PORT_BASE:-3060}"
+
+# Start Docker if the daemon isn't running (macOS: Docker Desktop; Linux: systemd).
+if ! docker info >/dev/null 2>&1; then
+  echo "Starting Docker…"
+  if [ "$(uname)" = "Darwin" ]; then
+    open --background -a Docker
+  else
+    sudo systemctl start docker 2>/dev/null || true
+  fi
+  until docker info >/dev/null 2>&1; do sleep 2; done
+  echo "Docker is up."
+fi
+
+port=$BASE
+while lsof -nP -iTCP:"$port" -sTCP:LISTEN >/dev/null 2>&1; do
+  port=$((port + 1))
+done
+
+echo
+echo "══════════════════════════════════════════════"
+echo "  ${APP} → http://localhost:${port}"
+if [ "$port" != "$BASE" ]; then
+  echo "  (base port ${BASE} was busy)"
+fi
+echo "══════════════════════════════════════════════"
+echo
+
+HOST_PORT=$port exec docker compose up "$@"
