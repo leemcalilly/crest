@@ -1,0 +1,17 @@
+<% max = cycles.map { |c| c.matches.size }.max.to_f %>
+<div class="bars" data-model-context-target="histogram">
+  <% cycles.each do |c| %>
+    <% n = c.matches.size %>
+    <% klass = if c == current then "on" elsif c.interrupted? then "war" elsif n <= 15 then "faint" else "" end %>
+    <%= link_to cycle_path(c), class: klass, title: "#{c.name} — #{n} matches",
+        style: "height: #{[ (n / max * 124).round, 2 ].max}px;",
+        data: { cycle: c.slug } do %><% end %>
+  <% end %>
+</div>
+<div class="ticks">
+  <% cycles.each_with_index do |c, i| %>
+    <div class="cap" style="<%= "color: var(--oxblood);" if c == current %>">
+      <%= (i.zero? || c.world_cup_year.to_i % 20 == 10 || c == current || i == cycles.size - 1) ? (c.world_cup_year || "<1930") : "" %>
+    </div>
+  <% end %>
+</div>

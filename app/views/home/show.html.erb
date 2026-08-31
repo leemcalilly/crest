@@ -1,0 +1,95 @@
+<% content_for :title, "crest — every match the United States has ever played" %>
+
+<section style="padding: 30px 0 0;">
+  <div style="display: flex; align-items: flex-end; justify-content: space-between; gap: 32px; flex-wrap: wrap;">
+    <div>
+      <h1 class="display" style="font-size: 84px;">crest</h1>
+      <p class="lede" style="font-size: 21px; margin: 14px 0 0;">Every match the United States has ever played.</p>
+    </div>
+    <div class="num" style="text-align: right; font-size: 12px; line-height: 1.9; color: var(--ink-soft);">
+      <div><span style="font-size: 26px; color: var(--ink);"><%= number_with_delimiter @record.played %></span> matches</div>
+      <div><span style="font-size: 26px; color: var(--ink);"><%= @opponents %></span> opponents</div>
+      <div><span style="font-size: 26px; color: var(--ink);"><%= @record.cities %></span> cities</div>
+    </div>
+  </div>
+</section>
+
+<section style="padding: 26px 0 0;">
+  <hr class="rule">
+  <div style="padding-top: 18px;">
+    <%= render "cycles/histogram", cycles: @cycles, current: @current %>
+  </div>
+  <div style="display: flex; justify-content: space-between; padding-top: 10px; gap: 16px; flex-wrap: wrap;">
+    <div class="cap">Matches per World Cup cycle &middot; <%= @cycles.count %> cycles</div>
+    <div class="cap">Every bar is a real count &mdash; click one to travel</div>
+  </div>
+  <hr class="hair" style="margin-top: 12px;">
+</section>
+
+<section style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0; padding: 32px 0 0;">
+  <div style="padding-right: 32px; border-right: 1px solid var(--rule);">
+    <div class="cap" style="color: var(--oxblood);">The last one</div>
+    <hr class="rule" style="margin-top: 10px;">
+    <%= render "matches/scoreline", match: @latest %>
+  </div>
+  <div style="padding-left: 32px;">
+    <div class="cap" style="color: var(--oxblood);">The first one</div>
+    <hr class="rule" style="margin-top: 10px;">
+    <%= render "matches/scoreline", match: @first %>
+  </div>
+</section>
+
+<section style="padding: 36px 0 0;">
+  <hr class="rule">
+  <table>
+    <thead>
+      <tr class="cap">
+        <th>Side</th><th class="n">Span</th><th class="n">P</th><th class="n">W</th>
+        <th class="n">D</th><th class="n">L</th><th class="n">GF</th><th class="n">GA</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td class="name">Men</td>
+        <td class="n faint"><%= @first.played_on.year %>&ndash;<%= @latest.played_on.year %></td>
+        <td class="n"><%= @record.played %></td>
+        <td class="n"><%= @record.won %></td>
+        <td class="n"><%= @record.drawn %></td>
+        <td class="n"><%= @record.lost %></td>
+        <td class="n"><%= @record.goals_for %></td>
+        <td class="n"><%= @record.goals_against %></td>
+      </tr>
+      <tr>
+        <td class="name" style="color: var(--ink-faint);">Women</td>
+        <td class="n faint" colspan="7">
+          <%= link_to "No open license yet — see Sources", sources_path(anchor: "women") %>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+  <hr class="rule">
+</section>
+
+<section style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 32px; padding: 32px 0 0; align-items: start;">
+  <div style="border: 1px solid var(--ink); padding: 20px 22px;">
+    <div class="cap">Leading scorer</div>
+    <div class="serif" style="font-size: 34px; font-weight: 700; letter-spacing: -0.02em; padding-top: 6px;">
+      <%= link_to @leader.name, player_path(@leader), style: "color: var(--ink);" %>
+    </div>
+    <div style="display: flex; gap: 28px; padding-top: 14px;">
+      <div><div class="num" style="font-size: 32px;"><%= @leader.goal_count %></div><div class="cap">goals</div></div>
+      <div><div class="num" style="font-size: 32px;"><%= @leader.first_goal_on.year %></div><div class="cap">first</div></div>
+      <div><div class="num" style="font-size: 32px;"><%= @leader.last_goal_on.year %></div><div class="cap">last</div></div>
+    </div>
+  </div>
+  <div style="padding-top: 4px;">
+    <p class="serif" style="font-size: 21px; font-weight: 600; line-height: 1.35; margin: 0; text-wrap: pretty;">
+      Travel to any cycle the United States has played, and read the record as it stood.
+    </p>
+    <p style="padding-top: 18px; margin: 0;">
+      <%= link_to cycle_path(@current), style: "display: inline-block; background: var(--ink); color: var(--paper); font-family: var(--mono); font-size: 12px; letter-spacing: 0.14em; text-transform: uppercase; padding: 14px 26px;" do %>
+        Open the time machine
+      <% end %>
+    </p>
+  </div>
+</section>

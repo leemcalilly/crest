@@ -1,0 +1,20 @@
+<table>
+  <thead>
+    <tr class="cap">
+      <th>Date</th><th>Opponent</th><th class="c">Score</th>
+      <th>Tournament</th><th>Venue</th><th class="n">Result</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% matches.each do |m| %>
+      <tr>
+        <td class="faint"><%= m.played_on.strftime("%d %b %Y").upcase %></td>
+        <td class="name"><%= link_to m.opponent, match_path(m), style: "color: var(--ink);" %></td>
+        <td class="c" style="font-size: 15px; font-weight: 600;"><%= m.us_score %> &ndash; <%= m.opponent_score %></td>
+        <td class="faint"><%= m.tournament_name %></td>
+        <td class="faint"><%= m.city %></td>
+        <td class="n"><% if m.won? %><span class="w">W</span><% else %><%= m.result %><% end %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>

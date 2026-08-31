@@ -1,0 +1,32 @@
+<% content_for :title, "Scorers — crest" %>
+
+<section style="padding: 30px 0 0;">
+  <h1 class="display">Scorers</h1>
+  <p class="lede" style="padding-top: 12px; max-width: 620px;">
+    Ranked by goals in the open record. The record is thin on friendlies, so every total here is a floor, not a career.
+  </p>
+</section>
+
+<section style="padding: 26px 0 0;">
+  <hr class="rule">
+  <table>
+    <thead>
+      <tr class="cap">
+        <th style="width: 40px;">#</th><th>Scorer</th>
+        <th class="n">First &ndash; last goal</th><th class="n">Cycles</th><th class="n">G</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% @players.each_with_index do |player, i| %>
+        <tr>
+          <td class="num faint"><%= i + 1 %></td>
+          <td class="name"><%= link_to player.name, player_path(player), style: "color: var(--ink);" %></td>
+          <td class="n faint"><%= player.first_goal_on.year %>&ndash;<%= player.last_goal_on.year %></td>
+          <td class="n faint"><%= player.cycles.count %></td>
+          <td class="n" style="font-size: 16px; font-weight: 600;"><%= player.goal_count %></td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+  <hr class="rule">
+</section>
