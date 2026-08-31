@@ -1,0 +1,9 @@
+{
+  "name": "crest",
+  "build": { "dockerfile": "Dockerfile" },
+  "forwardPorts": [3000],
+  "portsAttributes": {
+    "3000": { "label": "crest", "onAutoForward": "notify" }
+  },
+  "postCreateCommand": "bin/setup --skip-server"
+}

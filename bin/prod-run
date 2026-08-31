@@ -1,0 +1,19 @@
+#!/usr/bin/env bash
+# Boot the actual production image locally — the pre-ship parity check.
+# Same image bin/ship pushes. Uses a named Docker volume for /rails/storage
+# so it never touches your development storage/. LOCAL_PROD_CHECK=1 relaxes
+# forced SSL so localhost works over plain http.
+set -euo pipefail
+
+IMAGE="ghcr.io/leemcalilly/crest"
+
+docker build -t "$IMAGE" .
+echo
+echo "Booting $IMAGE at http://localhost:3000 (Ctrl-C to stop)…"
+exec docker run --rm -it \
+  -p 3000:80 \
+  -e RAILS_MASTER_KEY="$(cat config/master.key)" \
+  -e LOCAL_PROD_CHECK=1 \
+  -e SOLID_QUEUE_IN_PUMA=1 \
+  -v crest-prod-check:/rails/storage \
+  "$IMAGE"

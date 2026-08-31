@@ -1,0 +1,29 @@
+test:
+  service: Disk
+  root: <%= Rails.root.join("tmp/storage") %>
+
+# The default: self-contained on the box. The SQLite databases and these
+# blobs live together under storage/, so ONCE backs up the whole app state
+# as one unit.
+local:
+  service: Disk
+  root: <%= Rails.root.join("storage") %>
+
+# The next rung of the storage ladder. Selected automatically in production
+# when the R2_* variables are present (see config/environments/production.rb).
+# Migration from local: switch this to primary via a Mirror service, backfill,
+# then flip — see docs/guides/architecture.md.
+r2:
+  service: S3
+  endpoint: <%= "https://#{ENV["R2_ACCOUNT_ID"]}.r2.cloudflarestorage.com" %>
+  access_key_id: <%= ENV["R2_ACCESS_KEY_ID"] %>
+  secret_access_key: <%= ENV["R2_SECRET_ACCESS_KEY"] %>
+  bucket: <%= ENV["R2_BUCKET"] %>
+  region: auto
+  request_checksum_calculation: when_required
+  response_checksum_validation: when_required
+
+# mirror:
+#   service: Mirror
+#   primary: local
+#   mirrors: [ r2 ]

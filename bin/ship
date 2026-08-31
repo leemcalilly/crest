@@ -1,0 +1,17 @@
+#!/usr/bin/env bash
+# Build and push the production image, then update the app in ONCE.
+# Box: the shared ONCE droplet (amd64, NYC3). Registry: ghcr.io (needs
+# write:packages scope). Cross-built from Apple Silicon via Docker Desktop's
+# Rosetta support; move builds to CI if that ever gets painful. The ONCE
+# update step stays manual until the update loop is validated on this box.
+set -euo pipefail
+
+IMAGE="ghcr.io/leemcalilly/crest"
+PLATFORM="${PLATFORM:-linux/amd64}"
+
+docker build --platform "$PLATFORM" -t "$IMAGE" .
+docker push "$IMAGE"
+
+echo
+echo "Pushed $IMAGE ($PLATFORM)."
+echo "Next: ONCE dashboard → crest → update to pull the new image."
