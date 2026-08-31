@@ -1,10 +1,173 @@
-/*
- * This is a manifest file that'll be compiled into application.css.
- *
- * With Propshaft, assets are served efficiently without preprocessing steps. You can still include
- * application-wide styles in this file, but keep in mind that CSS precedence will follow the standard
- * cascading order, meaning styles declared later in the document or manifest will override earlier ones,
- * depending on specificity.
- *
- * Consider organizing styles into separate files for maintainability.
- */
+/* crest — the Agate direction.
+   Paper and ink, one oxblood accent, navy reserved for the crest itself. */
+
+:root {
+  --paper: #f4f1e8;
+  --paper-edge: #ffffff;
+  --ink: #1a1815;
+  --ink-soft: #3a352d;
+  --ink-faint: #6b6558;
+  --rule: #d6d0c4;
+  --rule-faint: #eae5da;
+  --bar: #a9a08d;
+  --bar-faint: #c9c2b2;
+  --oxblood: #8c1d18;
+  --navy: #14213d;
+
+  --serif: "IBM Plex Serif", Georgia, "Times New Roman", serif;
+  --mono: "IBM Plex Mono", ui-monospace, "SF Mono", Menlo, monospace;
+  --sans: "IBM Plex Sans", ui-sans-serif, system-ui, sans-serif;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--sans);
+  -webkit-font-smoothing: antialiased;
+}
+
+a { color: var(--oxblood); text-decoration: none; }
+a:hover { color: #5c1310; text-decoration: underline; }
+
+.wrap { max-width: 1040px; margin: 0 auto; padding: 0 24px; }
+
+.rule { border: 0; border-top: 1px solid var(--ink); margin: 0; }
+.hair { border: 0; border-top: 1px solid var(--rule); margin: 0; }
+
+.cap {
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+}
+
+.num { font-family: var(--mono); font-weight: 600; }
+.serif { font-family: var(--serif); }
+
+/* Masthead ------------------------------------------------------------ */
+
+.masthead {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  padding: 16px 0;
+}
+
+.wordmark {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  color: var(--ink);
+}
+.wordmark:hover { text-decoration: none; }
+.wordmark span {
+  font-family: var(--serif);
+  font-weight: 700;
+  font-size: 27px;
+  letter-spacing: -0.03em;
+}
+
+.nav { display: flex; gap: 22px; flex-wrap: wrap; }
+.nav a { color: var(--ink-faint); }
+.nav a.on { color: var(--ink); border-bottom: 2px solid var(--oxblood); padding-bottom: 2px; }
+
+.tools { display: flex; align-items: center; gap: 8px; }
+.tools .dot {
+  width: 7px; height: 7px; border-radius: 50%;
+  background: var(--bar-faint);
+}
+.tools.live .dot { background: var(--oxblood); }
+
+/* Type ---------------------------------------------------------------- */
+
+h1.display {
+  font-family: var(--serif);
+  font-weight: 700;
+  font-size: 52px;
+  line-height: 1.05;
+  letter-spacing: -0.03em;
+  margin: 6px 0 0;
+  text-wrap: balance;
+}
+
+.lede {
+  font-family: var(--serif);
+  font-style: italic;
+  font-size: 18px;
+  color: var(--ink-soft);
+  line-height: 1.5;
+  text-wrap: pretty;
+}
+
+/* Stat row ------------------------------------------------------------ */
+
+.stats { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 0; padding: 22px 0 0; }
+.stats .v { font-family: var(--mono); font-weight: 600; font-size: 30px; line-height: 1; }
+.stats .v.hi { color: var(--oxblood); }
+.stats .k { margin-top: 5px; }
+
+/* Cycle histogram ----------------------------------------------------- */
+
+.bars { display: flex; align-items: flex-end; gap: 3px; height: 124px; }
+.bars a { display: block; flex-grow: 1; background: var(--bar); min-height: 2px; }
+.bars a.faint { background: var(--bar-faint); }
+.bars a.war { background: #c9b9a0; }
+.bars a.on { background: var(--navy); }
+.bars a:hover { background: var(--oxblood); }
+
+.ticks { display: flex; gap: 3px; padding-top: 7px; }
+.ticks div { flex-grow: 1; }
+
+/* Tables -------------------------------------------------------------- */
+
+table { width: 100%; border-collapse: collapse; font-family: var(--mono); font-size: 13px; }
+th { text-align: left; padding: 8px 0; font-weight: 500; }
+td { padding: 11px 0; border-top: 1px solid var(--rule); }
+td.name { font-family: var(--serif); font-size: 17px; font-weight: 600; }
+td.n, th.n { text-align: right; }
+td.c, th.c { text-align: center; }
+td.faint { color: var(--ink-faint); }
+td .w { color: var(--oxblood); font-weight: 600; }
+
+/* Cards --------------------------------------------------------------- */
+
+.card { border: 1px solid var(--ink); background: var(--paper-edge); }
+.card .band {
+  background: var(--navy); color: var(--paper);
+  padding: 16px 24px; display: flex; align-items: center;
+  justify-content: space-between; gap: 16px;
+}
+.card .band .cap { color: #9aa5bd; }
+.card .body { padding: 24px; }
+.card .foot {
+  background: var(--paper); border-top: 1px solid var(--ink);
+  padding: 14px 24px; font-family: var(--mono); font-size: 11px;
+  line-height: 1.8; color: var(--ink-faint);
+}
+.card .foot strong { color: var(--oxblood); }
+
+.agent {
+  border: 1px solid var(--navy); background: var(--paper-edge);
+  padding: 16px 20px; display: flex; align-items: center;
+  justify-content: space-between; gap: 24px;
+}
+.agent .what { font-family: var(--serif); font-size: 16px; padding-top: 3px; }
+
+/* Footer -------------------------------------------------------------- */
+
+footer { padding: 28px 0 48px; }
+footer .credit { font-family: var(--mono); font-size: 11px; line-height: 1.9; color: var(--ink-faint); }
+
+@media (max-width: 720px) {
+  h1.display { font-size: 38px; }
+  .stats { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 18px 0; }
+  .masthead { flex-wrap: wrap; }
+}
+
+/* An agent pointing at a cycle lights the bar for the reader. */
+.bars a.lit { background: var(--oxblood); outline: 2px solid var(--oxblood); outline-offset: 2px; }

@@ -1,0 +1,13 @@
+<div style="display: flex; justify-content: space-between; align-items: baseline; padding-top: 14px;">
+  <div class="serif" style="font-size: 27px; font-weight: 600;">United States</div>
+  <div class="num" style="font-size: 40px;"><%= match.us_score %></div>
+</div>
+<div style="display: flex; justify-content: space-between; align-items: baseline; padding-top: 2px;">
+  <div class="serif" style="font-size: 27px; font-weight: 600; color: var(--ink-faint);"><%= match.opponent %></div>
+  <div class="num" style="font-size: 40px; color: var(--ink-faint);"><%= match.opponent_score %></div>
+</div>
+<hr class="hair" style="margin-top: 14px;">
+<div class="num" style="font-size: 11px; line-height: 2; color: var(--ink-soft); padding-top: 10px;">
+  <div><%= match.played_on.strftime("%-d %b %Y").upcase %> &middot; <%= match.tournament_name %></div>
+  <div><%= match.venue %></div>
+</div>

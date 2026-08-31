@@ -26,4 +26,14 @@ class Cycle < ApplicationRecord
   def interrupted? = world_cup_year.present? && length_in_years > 4
 
   def record = Match::Record.new(matches)
+
+  # The JSON contract. One place, shared by the page's own URLs and by
+  # every tool an agent calls.
+  def as_json(options = nil)
+    r = record
+    { slug:, name:, world_cup_year:, from: starts_on.year, to: ends_on.year,
+      position:, interrupted: interrupted?,
+      record: { played: r.played, won: r.won, drawn: r.drawn, lost: r.lost,
+                goals_for: r.goals_for, goals_against: r.goals_against, cities: r.cities } }
+  end
 end

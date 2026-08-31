@@ -1,0 +1,63 @@
+<% content_for :title, "#{@cycle.name} — crest" %>
+
+<section style="padding: 30px 0 0;">
+  <div style="display: flex; align-items: flex-end; justify-content: space-between; gap: 30px; flex-wrap: wrap;">
+    <div>
+      <div class="cap" style="color: var(--oxblood);">Cycle <%= @cycle.position %> of <%= ::Cycle.count %></div>
+      <h1 class="display" data-model-context-target="cycleName"><%= @cycle.name %></h1>
+      <div class="num" style="font-size: 13px; color: var(--ink-faint); padding-top: 8px;">
+        <%= @cycle.starts_on.year %> &ndash; <%= @cycle.ends_on.year %>
+        <% if @cycle.interrupted? %>&middot; twelve years, no tournament played<% end %>
+      </div>
+    </div>
+    <p class="lede" style="text-align: right; max-width: 300px; margin: 0;">
+      Step a cycle at a time, or ask the agent to take you to one.
+    </p>
+  </div>
+</section>
+
+<section style="padding: 26px 0 0;">
+  <hr class="rule">
+  <div style="padding-top: 18px;">
+    <%= render "cycles/histogram", cycles: @cycles, current: @cycle %>
+  </div>
+  <hr class="hair" style="margin-top: 16px;">
+</section>
+
+<section class="stats">
+  <div><div class="v"><%= @record.played %></div><div class="cap k">matches</div></div>
+  <div><div class="v hi"><%= @record.won %></div><div class="cap k">won</div></div>
+  <div><div class="v"><%= @record.drawn %></div><div class="cap k">drawn</div></div>
+  <div><div class="v"><%= @record.lost %></div><div class="cap k">lost</div></div>
+  <div><div class="v"><%= @record.goals_for %>&ndash;<%= @record.goals_against %></div><div class="cap k">goals</div></div>
+  <div><div class="v"><%= @record.cities %></div><div class="cap k">cities</div></div>
+</section>
+
+<% if @world_cup.any? %>
+  <section style="padding: 30px 0 0;">
+    <hr class="rule">
+    <div style="display: flex; justify-content: space-between; align-items: baseline; padding: 14px 0 10px;">
+      <h2 class="serif" style="font-weight: 700; font-size: 22px; margin: 0;">The tournament &middot; World Cup <%= @cycle.world_cup_year %></h2>
+      <div class="cap"><%= pluralize @world_cup.size, "match" %></div>
+    </div>
+    <%= render "matches/table", matches: @world_cup %>
+  </section>
+<% end %>
+
+<section style="padding: 30px 0 0;">
+  <hr class="rule">
+  <div style="display: flex; justify-content: space-between; align-items: baseline; padding: 14px 0 10px;">
+    <h2 class="serif" style="font-weight: 700; font-size: 22px; margin: 0;">Every match in this cycle</h2>
+    <div class="cap"><%= @matches.size %> total</div>
+  </div>
+  <%= render "matches/table", matches: @matches %>
+  <hr class="rule">
+  <div style="display: flex; justify-content: space-between; padding-top: 12px; gap: 22px;">
+    <div class="cap">
+      <% if @cycle.previous %><%= link_to "← #{@cycle.previous.name}", cycle_path(@cycle.previous) %><% end %>
+    </div>
+    <div class="cap">
+      <% if @cycle.next %><%= link_to "#{@cycle.next.name} →", cycle_path(@cycle.next) %><% end %>
+    </div>
+  </div>
+</section>

@@ -1,0 +1,52 @@
+<% content_for :title, "United States #{@match.us_score}–#{@match.opponent_score} #{@match.opponent} — crest" %>
+
+<section style="padding: 30px 0 0;">
+  <div class="cap" style="color: var(--oxblood);">
+    <%= link_to @match.cycle.name, cycle_path(@match.cycle) %>
+  </div>
+  <div style="display: flex; align-items: center; justify-content: space-between; gap: 24px; padding-top: 12px; flex-wrap: wrap;">
+    <div class="serif" style="font-size: 40px; font-weight: 700; letter-spacing: -0.03em;">United States</div>
+    <div class="num" style="font-size: 64px; line-height: 1;">
+      <%= @match.us_score %> <span style="color: var(--rule);">&ndash;</span> <%= @match.opponent_score %>
+    </div>
+    <div class="serif" style="font-size: 40px; font-weight: 700; letter-spacing: -0.03em; color: var(--ink-faint);"><%= @match.opponent %></div>
+  </div>
+  <hr class="rule" style="margin-top: 22px;">
+</section>
+
+<section class="stats" style="grid-template-columns: repeat(4, minmax(0, 1fr));">
+  <div><div class="v" style="font-size: 20px;"><%= @match.played_on.strftime("%-d %B %Y") %></div><div class="cap k">played</div></div>
+  <div><div class="v" style="font-size: 20px;"><%= @match.tournament_name %></div><div class="cap k">tournament</div></div>
+  <div><div class="v" style="font-size: 20px;"><%= @match.venue %></div><div class="cap k">venue</div></div>
+  <div><div class="v" style="font-size: 20px;"><%= @match.neutral? ? "Neutral" : (@match.home? ? "Home" : "Away") %></div><div class="cap k">ground</div></div>
+</section>
+
+<section style="padding: 30px 0 0;">
+  <hr class="rule">
+  <div class="cap" style="padding: 14px 0 10px;">Scorers</div>
+  <% if @match.goals.any? %>
+    <table>
+      <tbody>
+        <% @match.scorers.each do |goal| %>
+          <tr>
+            <td class="n num" style="width: 60px;"><%= goal.minute %>'</td>
+            <td class="name">
+              <% if goal.player %><%= link_to goal.scorer_name, player_path(goal.player), style: "color: var(--ink);" %><% else %><%= goal.scorer_name %><% end %>
+            </td>
+            <td class="faint">
+              <%= goal.for_us? ? "United States" : @match.opponent %>
+              <% if goal.penalty? %> &middot; penalty<% end %>
+              <% if goal.own_goal? %> &middot; own goal<% end %>
+            </td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  <% else %>
+    <p class="num" style="font-size: 12px; color: var(--ink-faint); line-height: 1.9;">
+      No scorers recorded. The open dataset covers goalscorers for major tournaments;
+      friendly scoring is incomplete. <%= link_to "Sources", sources_path %>.
+    </p>
+  <% end %>
+  <hr class="rule">
+</section>
