@@ -3,16 +3,17 @@ import { Controller } from "@hotwired/stimulus"
 // Registers this page's tools with the browser, so an agent looking at the
 // page can act on it through the reader's own session.
 //
-// The object is document.modelContext — not navigator.modelContext. The
-// normative IDL puts it on Document; several secondhand write-ups get this
-// wrong. Feature-detect and never assume.
+// WebMCP is young and still moving. The normative IDL puts modelContext on
+// Document, but shipping builds have exposed it on Navigator, so we accept
+// either rather than betting the whole site on one spelling.
 export default class extends Controller {
   static targets = ["indicator", "label", "histogram", "cycleName"]
 
   connect() {
     this.controller = new AbortController()
 
-    if (!("modelContext" in document)) {
+    this.context = this.findModelContext()
+    if (!this.context) {
       this.report("Site tools · not supported here")
       return
     }
@@ -34,8 +35,17 @@ export default class extends Controller {
     this.controller?.abort()
   }
 
+  // Document first, Navigator second — whichever this browser actually has.
+  findModelContext() {
+    for (const host of [document, navigator, window]) {
+      const context = host && host.modelContext
+      if (context && typeof context.registerTool === "function") return context
+    }
+    return null
+  }
+
   register(tool) {
-    return document.modelContext.registerTool({
+    return this.context.registerTool({
       name: tool.name,
       description: tool.description,
       inputSchema: tool.inputSchema,
