@@ -22,12 +22,38 @@ export default class extends Controller {
     if (!manifest) return
 
     const { tools } = JSON.parse(manifest.textContent)
-    Promise.all(tools.map((tool) => this.register(tool)))
-      .then(() => {
-        this.element.querySelector(".tools")?.classList.add("live")
-        this.report(`Site tools · ${tools.length}`)
-      })
-      .catch(() => this.report("Site tools · unavailable"))
+    this.toolCount = 0
+
+    // Register each tool independently. registerTool may return a promise, a
+    // value, or nothing at all depending on the build, so never gate the
+    // interface on all of them settling — one slow tool would leave the page
+    // looking broken while everything actually worked.
+    for (const tool of tools) {
+      try {
+        const result = this.register(tool)
+        this.toolCount += 1
+        if (result && typeof result.catch === "function") {
+          result.catch((error) => this.failed(tool, error))
+        }
+      } catch (error) {
+        this.failed(tool, error)
+      }
+    }
+
+    if (this.toolCount > 0) {
+      this.element.querySelector(".tools")?.classList.add("live")
+      this.report(`Site tools · ${this.toolCount}`)
+      console.info(`[crest] registered ${this.toolCount} WebMCP tools:`,
+                   tools.map((t) => t.name).join(", "))
+    } else {
+      this.report("Site tools · none registered")
+    }
+  }
+
+  failed(tool, error) {
+    this.toolCount = Math.max(0, this.toolCount - 1)
+    console.warn(`[crest] tool ${tool.name} failed to register`, error)
+    this.report(this.toolCount > 0 ? `Site tools · ${this.toolCount}` : "Site tools · unavailable")
   }
 
   disconnect() {
