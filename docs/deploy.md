@@ -9,7 +9,7 @@ is no master key to move and no credential file to manage on the box.
 | Variable | Why |
 |---|---|
 | `SECRET_KEY_BASE` | Session signing. Any 64-char hex value; generate once and keep it. |
-| `APP_HOST` | The hostname it answers for. Defaults to `crest.leemcalilly.com`. |
+| `APP_HOST` | The hostname it answers for. Defaults to `crest.soccer`. |
 
 Nothing else. No `RAILS_MASTER_KEY` is required.
 
