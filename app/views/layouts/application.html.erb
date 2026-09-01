@@ -4,7 +4,7 @@
     <title><%= content_for(:title) || "crest" %></title>
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="description" content="<%= content_for(:description) || "Every match the United States has ever played." %>">
+    <meta name="description" content="<%= content_for(:description) || "Every match the USMNT has ever played. The United States Men&rsquo;s National Soccer Team, 1885 to now." %>">
     <%= csrf_meta_tags %>
     <%= csp_meta_tag %>
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -27,7 +27,6 @@
         <nav class="nav cap">
           <%= link_to "Cycles", cycles_path, class: ("on" if controller_name == "cycles") %>
           <%= link_to "Players", players_path, class: ("on" if controller_name == "players") %>
-          <%= link_to "Women", sources_path(anchor: "women") %>
           <%= link_to "Sources", sources_path, class: ("on" if controller_name == "sources") %>
         </nav>
 

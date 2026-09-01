@@ -73,8 +73,21 @@ a:hover { color: #5c1310; text-decoration: underline; }
 }
 
 .nav { display: flex; gap: 22px; flex-wrap: wrap; }
-.nav a { color: var(--ink-faint); }
-.nav a.on { color: var(--ink); border-bottom: 2px solid var(--oxblood); padding-bottom: 2px; }
+
+/* Hover renders exactly like active, so the nav has one visual language.
+   Hovering the page you are already on therefore changes nothing. */
+.nav a {
+  color: var(--ink-faint);
+  border-bottom: 2px solid transparent;
+  padding-bottom: 2px;
+  text-decoration: none;
+}
+.nav a:hover,
+.nav a.on {
+  color: var(--ink);
+  border-bottom-color: var(--oxblood);
+  text-decoration: none;
+}
 
 .tools { display: flex; align-items: center; gap: 8px; }
 .tools .dot {
