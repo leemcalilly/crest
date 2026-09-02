@@ -121,21 +121,43 @@ export default class extends Controller {
     }
   }
 
-  setCycle(slug) {
-    const bar = this.barFor(slug)
-    if (!bar) return { error: `No cycle named ${slug}. Call list_cycles for the slugs.` }
-    Turbo.visit(bar.getAttribute("href"))
+  // Navigation must not depend on what the chart happens to be showing. The
+  // chart may be drawing opponents or venues, in which case no cycle bar
+  // exists — so ask the server whether the cycle is real, then go.
+  async setCycle(slug) {
+    const path = `/cycles/${encodeURIComponent(String(slug || "").trim())}`
+    const response = await fetch(`${path}.json`, { headers: { Accept: "application/json" } })
+    if (!response.ok) {
+      return { error: `No cycle named "${slug}". Call list_cycles for the slugs.` }
+    }
+    Turbo.visit(path)
     return { moved_to: slug, note: "The reader's page is now showing this cycle." }
   }
 
-  highlightCycle(slug) {
-    const bar = this.barFor(slug)
-    if (!bar) return { error: `No cycle named ${slug}. Call list_cycles for the slugs.` }
+  // Highlighting needs a cycle bar on screen. If the chart is showing
+  // something else, draw the cycles back first rather than failing.
+  async highlightCycle(slug) {
+    if (!this.hasHistogramTarget) return { error: "There is no chart on this page." }
 
-    this.histogramTarget.querySelectorAll("a").forEach((a) => a.classList.remove("lit"))
+    let bar = this.barFor(slug)
+    let redrew = false
+    if (!bar) {
+      await this.plotChart({ view: "cycles", metric: this.chart?.metric || "matches" })
+      bar = this.barFor(slug)
+      redrew = true
+    }
+    if (!bar) return { error: `No cycle named "${slug}". Call list_cycles for the slugs.` }
+
+    this.bars().forEach((node) => node.classList.remove("lit"))
     bar.classList.add("lit")
     bar.scrollIntoView({ behavior: "smooth", block: "nearest", inline: "center" })
-    return { highlighted: slug, note: "The bar is lit on the reader's screen." }
+    return {
+      highlighted: slug,
+      redrew_cycles: redrew,
+      note: redrew
+        ? "The chart was showing something else, so the cycles were drawn back before highlighting."
+        : "The bar is lit on the reader's screen."
+    }
   }
 
   // The chart is a surface, not a fixed histogram. The agent picks what it

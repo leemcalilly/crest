@@ -65,8 +65,8 @@
   <hr class="rule">
 </section>
 
-<section style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0; padding: 26px 0 0;">
-  <div style="padding-right: 34px; border-right: 1px solid var(--rule);">
+<section class="split" style="gap: 0; padding: 26px 0 0;">
+  <div class="divider" style="padding-right: 34px; border-right: 1px solid var(--rule);">
     <div class="cap" style="color: var(--navy); padding-bottom: 12px;">What crest computes</div>
     <div class="num" style="font-size: 12px; line-height: 2.1; color: var(--ink-soft); font-weight: 400;">
       World Cup cycles &mdash; <%= ::Cycle.count %> of them<br>
@@ -75,7 +75,7 @@
       Venue counts by city and country
     </div>
   </div>
-  <div style="padding-left: 34px;">
+  <div class="divided" style="padding-left: 34px;">
     <div class="cap" style="color: var(--oxblood); padding-bottom: 12px;">What no source gives us</div>
     <div class="num" style="font-size: 12px; line-height: 2.1; color: var(--ink-soft); font-weight: 400;">
       Appearances &mdash; so caps start at zero and grow<br>

@@ -77,9 +77,18 @@ class ModelContext::Manifest
       kind: :page, action: "readCurrentPage")
   ].freeze
 
-  def initialize(page: nil) = @page = page
+  # A tool that cannot work on this page should not be offered on it. The
+  # chart tools exist only where a chart is rendered; everything else follows
+  # the reader everywhere. This is the page-scoping WebMCP is built for.
+  CHART_TOOLS = %w[ plot_chart highlight_cycle ].freeze
+  CHART_PAGES = %w[ home cycles ].freeze
 
-  def tools = GLOBAL
+  def initialize(page: nil) = @page = page.to_s
+
+  def tools
+    return GLOBAL if CHART_PAGES.include?(@page)
+    GLOBAL.reject { CHART_TOOLS.include?(it.name) }
+  end
 
   def to_json(*) = { tools: tools.map(&:as_json) }.to_json
 end

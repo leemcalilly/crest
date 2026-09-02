@@ -9,6 +9,15 @@ class ToolsTest < ActionDispatch::IntegrationTest
     end
   end
 
+  test "the chart tools are advertised only where a chart is rendered" do
+    get root_path
+    assert_includes response.body, "plot_chart"
+
+    get sources_path
+    assert_not_includes response.body, "plot_chart",
+      "sources has no chart, so offering plot_chart there would fail when called"
+  end
+
   test "an agent browser is never turned away" do
     get root_path, headers: { "User-Agent" => "ChatGPT-Agent/1.0" }
     assert_response :success

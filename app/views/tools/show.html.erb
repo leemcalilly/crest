@@ -5,8 +5,8 @@
   <div class="cap" style="color: var(--oxblood);">WebMCP</div>
   <h1 class="display" style="font-size: 44px;">What an agent can do here</h1>
   <p class="lede" style="padding-top: 12px; max-width: 680px;">
-    If you arrive with an AI agent, crest hands it a set of tools. The agent can read the record,
-    and it can drive the site while you watch.
+    If you arrive with an AI agent, crest hands it a set of tools. Four read the record.
+    Four work on the page in front of you &mdash; and you watch them happen.
   </p>
   <p style="font-family: var(--mono); font-size: 12px; line-height: 2; color: var(--ink-soft); padding-top: 14px; max-width: 680px;">
     <strong style="color: var(--ink);">WebMCP</strong> is a browser standard that lets a website offer
@@ -31,7 +31,7 @@
         the site still works exactly as normal &mdash; you just cannot hand it to an agent.
         Here is how to get a browser that can.
       </p>
-      <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 24px; padding-top: 20px;">
+      <div class="split" style="gap: 24px; padding-top: 20px;">
         <div>
           <div class="cap" style="color: var(--navy); padding-bottom: 8px;">ChatGPT&rsquo;s browser</div>
           <p style="font-family: var(--mono); font-size: 12px; line-height: 1.9; color: var(--ink-soft); margin: 0;">
@@ -58,8 +58,8 @@
 
 <section style="padding: 28px 0 0;">
   <hr class="rule">
-  <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0; padding-top: 22px;">
-    <div style="padding-right: 34px; border-right: 1px solid var(--rule);">
+  <div class="split" style="gap: 0; padding-top: 22px;">
+    <div class="divider" style="padding-right: 34px; border-right: 1px solid var(--rule);">
       <h2 class="serif" style="font-weight: 700; font-size: 20px; margin: 0;">Why not just an API?</h2>
       <p style="font-family: var(--mono); font-size: 12px; line-height: 2; color: var(--ink-soft); padding-top: 10px;">
         crest has an API &mdash; every page answers to <code>.json</code>. But an API can only
@@ -68,7 +68,7 @@
         the same thing at the same moment, which is the part a server cannot do.
       </p>
     </div>
-    <div style="padding-left: 34px;">
+    <div class="divided" style="padding-left: 34px;">
       <h2 class="serif" style="font-weight: 700; font-size: 20px; margin: 0;">Nothing here is agent-only</h2>
       <p style="font-family: var(--mono); font-size: 12px; line-height: 2; color: var(--ink-soft); padding-top: 10px;">
         Every tool does something you can already do by clicking. crest sends no data anywhere,
@@ -96,7 +96,7 @@
   <ol class="tryit">
     <li>
       <span class="ask">&ldquo;Open crest.soccer and tell me what tools this site gives you.&rdquo;</span>
-      <span class="saw">Eight tools, four that read and four that act on the page.</span>
+      <span class="saw">Eight tools on the homepage: four read the record, four work on the page.</span>
     </li>
     <li>
       <span class="ask">&ldquo;Were they actually any good in the seventies, or just playing a lot?&rdquo;</span>
@@ -135,7 +135,7 @@
 </section>
 
 <section style="padding: 26px 0 0;">
-  <div class="cap" style="padding-bottom: 12px;">Tools that read</div>
+  <div class="cap" style="padding-bottom: 12px;">Tools that read the record</div>
   <table>
     <tbody>
       <% @tools.select { it.kind == :read }.each do |tool| %>
@@ -149,7 +149,7 @@
 </section>
 
 <section style="padding: 26px 0 0;">
-  <div class="cap" style="padding-bottom: 12px; color: var(--green);">Tools that drive the site</div>
+  <div class="cap" style="padding-bottom: 12px; color: var(--green);">Tools that work on the page in front of you</div>
   <table>
     <tbody>
       <% @tools.select { it.kind == :page }.each do |tool| %>

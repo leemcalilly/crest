@@ -103,7 +103,9 @@ and starts operating the interface alongside you.
 
 ## How WebMCP was implemented
 
-Eight tools — four read, four act on the live page.
+Eight tools — four read the record, four work on the page in front of you.
+(The split is not read versus write: `read_current_page` only reads, but what it
+reads is the live page, which no server tool can see.)
 
 | Tool | Kind | What it does |
 |---|---|---|
@@ -132,6 +134,11 @@ page-scoped tools unregister cleanly on Turbo navigation.
 **Read tools call the site's own URLs.** There is no `/api` namespace.
 `read_cycle` fetches `/cycles/1994.json` — the same controller, model and scope
 that renders the HTML page, with the reader's own cookies.
+
+**Tools are scoped to the page that can run them.** `plot_chart` and
+`highlight_cycle` are offered only where a chart is rendered; a page without one
+never advertises them, so an agent is never handed a tool that would fail. This
+is the page-scoping WebMCP exists for, and it is asserted by a test.
 
 **Page tools have no server equivalent.** `set_cycle` performs a Turbo visit;
 `highlight_cycle` adds a class to a bar and scrolls it into view;

@@ -12,7 +12,7 @@ entry, including the demo video, is in [SUBMISSION.md](SUBMISSION.md).
 ## What WebMCP does here
 
 crest registers eight tools with the browser through `document.modelContext`.
-Four read, four act on the page you are looking at:
+Four read the record; four work on the page you are looking at:
 
 | Tool | Kind | What it does |
 |---|---|---|
@@ -25,7 +25,7 @@ Four read, four act on the page you are looking at:
 | `plot_chart` | **page** | Draws a different view in the chart: cycles, opponents, venues or scorers |
 | `read_current_page` | **page** | What the reader is looking at right now |
 
-The last four are the reason this is WebMCP and not a server. A server tool can
+The second four are the reason this is WebMCP and not a server. A server tool can
 *describe* the timeline. A page tool **moves** it, so the person and the agent
 are looking at the same thing at the same moment.
 

@@ -224,8 +224,21 @@ footer .credit { font-family: var(--mono); font-size: 11px; line-height: 1.9; co
   .masthead { flex-wrap: wrap; }
 }
 
-/* An agent pointing at a cycle lights the bar for the reader. */
-.bars a.lit { background: var(--oxblood); outline: 2px solid var(--oxblood); outline-offset: 2px; }
+/* An agent pointing at a cycle lights the bar for the reader. A box around
+   the bar itself reads as a checkbox on the short ones and overshoots the
+   baseline, so the marker is a full-height column behind it instead — legible
+   whether the bar is two pixels tall or a hundred and sixty. */
+.bars a.lit { background: var(--oxblood); position: relative; }
+.bars a.lit::before {
+  content: "";
+  position: absolute;
+  left: -1px;
+  right: -1px;
+  bottom: 0;
+  height: 160px;
+  background: rgba(140, 29, 24, 0.13);
+  pointer-events: none;
+}
 
 /* The agent can redraw the timeline by a different measure. Negative values —
    goal difference in the lean years — read in oxblood rather than pretending
@@ -289,4 +302,20 @@ footer .credit { font-family: var(--mono); font-size: 11px; line-height: 1.9; co
 
 @media (prefers-reduced-motion: reduce) {
   .accent { animation: none; }
+}
+
+/* Two-column sections, and the numbers inside a card ---------------------- */
+.split { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.statline { display: flex; flex-wrap: wrap; gap: 18px 28px; }
+
+@media (max-width: 720px) {
+  /* One column, and drop the column rule that only made sense side by side.
+     Only elements marked as dividers are reset — a card's own border stays. */
+  .split { grid-template-columns: minmax(0, 1fr); gap: 26px; }
+  .split > .divider { border-right: 0 !important; padding-right: 0 !important; }
+  .split > .divided { padding-left: 0 !important; }
+
+  .statline .num { font-size: 26px !important; }
+  h1.display { font-size: 34px; }
+  .chart-hint { display: none; }
 }

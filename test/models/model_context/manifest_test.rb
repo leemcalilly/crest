@@ -1,7 +1,7 @@
 require "test_helper"
 
 class ModelContext::ManifestTest < ActiveSupport::TestCase
-  setup { @tools = ModelContext::Manifest.new.tools }
+  setup { @tools = ModelContext::Manifest.new(page: "home").tools }
 
   test "every tool describes itself for a model that knows nothing" do
     @tools.each do |tool|
@@ -29,6 +29,21 @@ class ModelContext::ManifestTest < ActiveSupport::TestCase
   test "tools that move the page are not marked read-only" do
     assert_not @tools.find { it.name == "set_cycle" }.read_only
     assert @tools.find { it.name == "read_current_page" }.read_only
+  end
+
+  test "a tool is only offered on a page where it can work" do
+    on_chart = ModelContext::Manifest.new(page: "home").tools.map(&:name)
+    elsewhere = ModelContext::Manifest.new(page: "sources").tools.map(&:name)
+
+    assert_includes on_chart, "plot_chart"
+    assert_includes on_chart, "highlight_cycle"
+    assert_not_includes elsewhere, "plot_chart", "a page with no chart must not offer to draw one"
+    assert_not_includes elsewhere, "highlight_cycle"
+
+    # Navigation and reading follow the reader everywhere.
+    assert_includes elsewhere, "set_cycle"
+    assert_includes elsewhere, "read_player"
+    assert_includes elsewhere, "read_current_page"
   end
 
   test "the views and measures a tool offers are the ones the chart can draw" do

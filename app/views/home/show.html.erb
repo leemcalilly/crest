@@ -26,13 +26,13 @@
   <hr class="hair" style="margin-top: 12px;">
 </section>
 
-<section style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0; padding: 32px 0 0;">
-  <div style="padding-right: 32px; border-right: 1px solid var(--rule);">
+<section class="split" style="gap: 0; padding: 32px 0 0;">
+  <div class="divider" style="padding-right: 32px; border-right: 1px solid var(--rule);">
     <div class="cap" style="color: var(--oxblood);">The last one</div>
     <hr class="rule" style="margin-top: 10px;">
     <%= render "matches/scoreline", match: @latest %>
   </div>
-  <div style="padding-left: 32px;">
+  <div class="divided" style="padding-left: 32px;">
     <div class="cap" style="color: var(--oxblood);">The first one</div>
     <hr class="rule" style="margin-top: 10px;">
     <%= render "matches/scoreline", match: @first %>
@@ -70,13 +70,13 @@
   <hr class="rule">
 </section>
 
-<section style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 32px; padding: 32px 0 0; align-items: start;">
+<section class="split" style="gap: 32px; padding: 32px 0 0; align-items: start;">
   <div style="border: 1px solid var(--ink); padding: 20px 22px;">
     <div class="cap">Leading scorer</div>
     <div class="serif" style="font-size: 34px; font-weight: 700; letter-spacing: -0.02em; padding-top: 6px;">
       <%= link_to @leader.name, player_path(@leader), style: "color: var(--ink);" %>
     </div>
-    <div style="display: flex; gap: 28px; padding-top: 14px;">
+    <div class="statline" style="padding-top: 14px;">
       <div><div class="num" style="font-size: 32px;"><%= @leader.goal_count %></div><div class="cap">goals</div></div>
       <div><div class="num" style="font-size: 32px;"><%= @leader.first_goal_on.year %></div><div class="cap">first</div></div>
       <div><div class="num" style="font-size: 32px;"><%= @leader.last_goal_on.year %></div><div class="cap">last</div></div>
