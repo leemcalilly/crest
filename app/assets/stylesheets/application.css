@@ -272,29 +272,21 @@ footer .credit { font-family: var(--mono); font-size: 11px; line-height: 1.9; co
 .tryit .saw { font-family: var(--mono); font-size: 11px; line-height: 1.8; color: var(--ink-faint); }
 .tryit .saw em { color: var(--green); font-style: normal; }
 
-/* The jersey, as a band ---------------------------------------------------
-   Stripes ripple across the top and bottom of the page rather than behind the
-   type, so they can be properly visible without fighting the tables. Each
-   stripe drifts at its own pace; the path repeats every 400 units and the
-   drift is exactly 400, so the loop never seams. */
-.waves { overflow: hidden; pointer-events: none; user-select: none; }
-.waves svg { width: 100%; display: block; }
+/* One straight accent across the top of the viewport. Light travels along it;
+   the stripe itself never moves. */
+.accent {
+  height: 5px;
+  margin-bottom: 14px;
+  background: linear-gradient(90deg, #7a1714 0%, #a8302a 22%, #7a1714 45%, #a8302a 68%, #7a1714 100%);
+  background-size: 260% 100%;
+  animation: travel 17s linear infinite;
+}
 
-/* Collar: one light ripple, so the page opens rather than announces itself. */
-.waves.top { margin-bottom: 22px; }
-
-/* Hem: the jersey. Thick bands with paper showing between them. */
-.waves.bottom { margin-top: 44px; }
-
-.waves .s1 { animation: ripple 26s linear infinite; }
-.waves .s2 { animation: ripple 38s linear infinite reverse; }
-.waves .s3 { animation: ripple 32s linear infinite; }
-
-@keyframes ripple {
-  from { transform: translateX(0); }
-  to   { transform: translateX(-400px); }
+@keyframes travel {
+  from { background-position: 0% 0; }
+  to   { background-position: 260% 0; }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .waves use { animation: none; }
+  .accent { animation: none; }
 }

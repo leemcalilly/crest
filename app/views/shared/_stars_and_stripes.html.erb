@@ -1,0 +1,31 @@
+<%# An original roundel in the flag's own language — stars over stripes. It is
+    deliberately NOT the federation crest, which is a registered trademark and
+    not ours to reproduce. A circle, so it never reads as a second shield
+    competing with the crest mark in the masthead. %>
+<svg width="<%= size %>" height="<%= size %>" viewBox="0 0 64 64"
+     xmlns="http://www.w3.org/2000/svg" role="img"
+     aria-label="United States men's national soccer team">
+  <defs>
+    <clipPath id="roundel-<%= id %>"><circle cx="32" cy="32" r="29"></circle></clipPath>
+  </defs>
+
+  <g clip-path="url(#roundel-<%= id %>)">
+    <rect x="0" y="0" width="64" height="64" fill="#f4f1e8"></rect>
+
+    <%# Stripes across the lower two thirds. %>
+    <g fill="#8c1d18">
+      <rect x="0" y="24" width="64" height="7"></rect>
+      <rect x="0" y="38" width="64" height="7"></rect>
+      <rect x="0" y="52" width="64" height="7"></rect>
+    </g>
+
+    <%# Canton: navy with three stars. %>
+    <rect x="0" y="0" width="30" height="24" fill="#14213d"></rect>
+    <g fill="#f4f1e8">
+      <path d="M9 6 L10.6 10 L14.8 10.2 L11.5 12.8 L12.6 16.9 L9 14.6 L5.4 16.9 L6.5 12.8 L3.2 10.2 L7.4 10 Z"></path>
+      <path d="M22 6 L23.6 10 L27.8 10.2 L24.5 12.8 L25.6 16.9 L22 14.6 L18.4 16.9 L19.5 12.8 L16.2 10.2 L20.4 10 Z"></path>
+    </g>
+  </g>
+
+  <circle cx="32" cy="32" r="29" fill="none" stroke="#14213d" stroke-width="4"></circle>
+</svg>
