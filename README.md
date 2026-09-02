@@ -6,6 +6,9 @@ A time machine for the United States men's national team, measured in World Cup
 cycles. 795 matches, 1885 to 2026, built entirely from open data — and it hands
 its tools to the agent looking at the page.
 
+Built for the [WebMCP Challenge](https://openai.com/webmcp-challenge/) — the full
+entry, including the demo video, is in [SUBMISSION.md](SUBMISSION.md).
+
 ## What WebMCP does here
 
 crest registers seven tools with the browser through `document.modelContext`.
