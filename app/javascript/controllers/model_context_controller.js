@@ -112,10 +112,8 @@ export default class extends Controller {
         return this.setCycle(input.cycle)
       case "highlightCycle":
         return this.highlightCycle(input.cycle)
-      case "plotCycles":
-        return this.plotCycles(input.metric)
-      case "filterByOpponent":
-        return this.filterByOpponent(input.opponent)
+      case "plotChart":
+        return this.plotChart(input)
       case "readCurrentPage":
         return this.readCurrentPage()
       default:
@@ -140,110 +138,89 @@ export default class extends Controller {
     return { highlighted: slug, note: "The bar is lit on the reader's screen." }
   }
 
-  // Redraw the timeline by a different measure. Every value is already in the
-  // page as a data attribute, so this is instant and needs no server.
-  METRICS = {
-    matches: "Matches played",
-    wins: "Matches won",
-    goals_for: "Goals scored",
-    goal_difference: "Goal difference",
-    win_rate: "Win rate"
-  }
+  // The chart is a surface, not a fixed histogram. The agent picks what it
+  // shows — cycles, opponents, venues, scorers — and the panel redraws from
+  // whatever the server returns. Cycles are one view among several.
+  async plotChart(input) {
+    if (!this.hasHistogramTarget) return { error: "There is no chart on this page." }
 
-  plotCycles(metric) {
-    if (!this.hasHistogramTarget) return { error: "There is no timeline on this page." }
-
-    const key = String(metric || "").trim()
-    if (!this.METRICS[key]) {
-      return { error: `Unknown measure "${metric}". Use one of: ${Object.keys(this.METRICS).join(", ")}.` }
+    const query = new URLSearchParams()
+    for (const key of ["view", "metric", "opponent"]) {
+      if (input[key]) query.append(key, input[key])
     }
 
-    this.metric = key
-    const values = this.draw((bar) => Number(bar.dataset[this.camel(key)]))
+    const response = await fetch(`/chart.json?${query}`, { headers: { Accept: "application/json" } })
+    if (!response.ok) return { error: `crest answered ${response.status} drawing that chart.` }
+
+    const chart = await response.json()
+    if (!chart.bars || chart.bars.length === 0) {
+      return { error: `Nothing to draw for that combination. The chart is unchanged.` }
+    }
+
+    this.chart = chart
+    const drawn = this.draw(chart)
     return {
-      plotted: key,
-      label: this.METRICS[key],
-      note: "The bars have re-animated on the reader's screen.",
-      highest: values.highest,
-      lowest: values.lowest
+      drawn: chart.view,
+      measuring: chart.label,
+      opponent: chart.opponent || null,
+      bars: chart.bars.length,
+      highest: drawn.highest,
+      lowest: drawn.lowest,
+      note: "The chart has re-animated on the reader's screen."
     }
   }
 
-  // Narrow the same bars to one opponent, across every cycle.
-  async filterByOpponent(opponent) {
-    if (!this.hasHistogramTarget) return { error: "There is no timeline on this page." }
-
-    const name = String(opponent || "").trim()
-    if (!name || name.toLowerCase() === "all") {
-      this.opponent = null
-      this.bars().forEach((bar) => { bar.dataset.filtered = "" })
-      this.draw((bar) => Number(bar.dataset[this.camel(this.metric || "matches")]))
-      return { filtered: null, note: "The timeline shows every opponent again." }
-    }
-
-    const response = await fetch(`/cycles.json?opponent=${encodeURIComponent(name)}`,
-                                { headers: { Accept: "application/json" } })
-    if (!response.ok) return { error: `crest answered ${response.status} looking up ${name}.` }
-
-    const { cycles } = await response.json()
-    const bySlug = Object.fromEntries(cycles.map((c) => [c.slug, c]))
-    const metric = this.metric || "matches"
-
-    let total = 0
-    this.bars().forEach((bar) => {
-      const row = bySlug[bar.dataset.cycle]
-      const value = row ? Number(row[metric]) : 0
-      bar.dataset.filtered = String(value)
-      if (row) total += Number(row.matches)
-    })
-
-    if (total === 0) {
-      this.bars().forEach((bar) => { bar.dataset.filtered = "" })
-      this.draw((bar) => Number(bar.dataset[this.camel(metric)]))
-      return { error: `The United States has no recorded matches against "${name}". The timeline is unchanged.` }
-    }
-
-    this.opponent = name
-    this.draw((bar) => Number(bar.dataset.filtered))
-    return { filtered: name, matches: total, measure: this.METRICS[metric],
-             note: `The timeline now shows only matches against ${name}.` }
-  }
-
-  // One drawing routine for both tools. Negative values keep their sign.
-  draw(valueOf) {
-    const bars = this.bars()
-    const values = bars.map(valueOf)
+  // Render an arbitrary set of bars into the one chart panel.
+  draw(chart) {
+    const values = chart.bars.map((b) => Number(b.value))
     const scale = Math.max(...values.map((v) => Math.abs(v)), 1)
+    const hasNegatives = values.some((v) => v < 0)
 
-    let highest = null, lowest = null
-    bars.forEach((bar, i) => {
-      const value = values[i]
-      const height = Math.max(Math.round((Math.abs(value) / scale) * 124), 2)
-      bar.style.height = `${height}px`
-      bar.classList.toggle("negative", value < 0)
-      bar.classList.toggle("dim", value === 0)
-      bar.title = `${bar.dataset.name} — ${value}`
-      if (!highest || value > highest.value) highest = { cycle: bar.dataset.cycle, value }
-      if (!lowest || value < lowest.value) lowest = { cycle: bar.dataset.cycle, value }
-    })
+    this.histogramTarget.replaceChildren(...chart.bars.map((bar) => {
+      const value = Number(bar.value)
+      const node = document.createElement(bar.href ? "a" : "span")
+      if (bar.href) node.href = bar.href
+      node.style.height = `${Math.max(Math.round((Math.abs(value) / scale) * 160), 2)}px`
+      node.title = `${bar.title} — ${value}`
+      node.dataset.cycle = bar.key
+      node.dataset.name = bar.title
+      if (value < 0) node.classList.add("negative")
+      if (value === 0) node.classList.add("dim")
+      return node
+    }))
 
-    this.caption(values.some((v) => v < 0))
-    return { highest, lowest }
+    this.ticksFor(chart)
+    this.caption(chart, hasNegatives)
+
+    const sorted = [...chart.bars].sort((a, b) => Number(a.value) - Number(b.value))
+    return {
+      highest: { name: sorted.at(-1).title, value: Number(sorted.at(-1).value) },
+      lowest: { name: sorted[0].title, value: Number(sorted[0].value) }
+    }
   }
 
-  caption(hasNegatives = false) {
+  // Cycles get sparse year labels; every other view labels every bar.
+  ticksFor(chart) {
+    const ticks = this.element.querySelector(".ticks")
+    if (!ticks) return
+
+    const many = chart.bars.length > 12
+    ticks.replaceChildren(...chart.bars.map((bar, i) => {
+      const node = document.createElement("div")
+      node.className = "cap"
+      const sparse = chart.view === "cycles" && (i === 0 || i % 5 === 0 || i === chart.bars.length - 1)
+      node.textContent = chart.view === "cycles" ? (sparse ? bar.label : "") : bar.label
+      if (many && chart.view !== "cycles") node.classList.add("turned")
+      return node
+    }))
+  }
+
+  caption(chart, hasNegatives = false) {
     if (!this.hasCaptionTarget) return
-    const measure = this.METRICS[this.metric || "matches"]
-    const who = this.opponent ? `against ${this.opponent}` : "all opponents"
-    // A negative bar grows upward like any other, so the colour is the only
-    // thing carrying its sign. Say so rather than leaving it to be guessed.
+    const who = chart.opponent && chart.view !== "opponents" ? ` · vs ${chart.opponent}` : ""
     const key = hasNegatives ? " · red bars are negative" : ""
-    this.captionTarget.textContent = `${measure} · ${who}${key}`
+    this.captionTarget.textContent = `${chart.title} · ${chart.label}${who}${key}`
   }
-
-  bars() { return Array.from(this.histogramTarget.querySelectorAll("a")) }
-
-  camel(key) { return key.replace(/_([a-z])/g, (_, c) => c.toUpperCase()) }
 
   readCurrentPage() {
     return {
@@ -251,8 +228,8 @@ export default class extends Controller {
       title: document.title,
       cycle_on_screen: this.hasCycleNameTarget ? this.cycleNameTarget.textContent.trim() : null,
       cycles_visible: this.hasHistogramTarget,
-      timeline_showing: this.hasHistogramTarget ? (this.METRICS[this.metric || "matches"]) : null,
-      timeline_filtered_to: this.opponent || null
+      chart_showing: this.chart ? `${this.chart.title} by ${this.chart.label}` : "World Cup cycles by matches played",
+      chart_filtered_to: this.chart?.opponent || null
     }
   }
 

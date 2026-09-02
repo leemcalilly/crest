@@ -53,23 +53,22 @@ class ModelContext::Manifest
       schema: { cycle: { type: "string", description: "Cycle slug, e.g. \"1994\"", required: true } }),
 
     Tool.new(
-      name: "plot_cycles",
-      description: "Redraw the timeline by a different measure. The bars re-animate on the " \
-                   "reader's screen from match counts to whichever measure you choose, so a " \
-                   "question like \"were they actually good in the seventies, or just playing a " \
-                   "lot?\" becomes visible instead of described. Measures: matches, wins, " \
-                   "goals_for, goal_difference, win_rate.",
-      kind: :page, action: "plotCycles", read_only: false,
-      schema: { metric: { type: "string", description: "One of: matches, wins, goals_for, goal_difference, win_rate",
-                          enum: Cycle::METRICS.keys, required: true } }),
-
-    Tool.new(
-      name: "filter_by_opponent",
-      description: "Redraw the timeline to show only matches against one opponent, across all " \
-                   "24 cycles. Use it to show a rivalry taking shape over time. Pass no name, " \
-                   "or \"all\", to clear the filter and show every opponent again.",
-      kind: :page, action: "filterByOpponent", read_only: false,
-      schema: { opponent: { type: "string", description: "Opponent name, e.g. \"Mexico\". Omit or pass \"all\" to clear." } }),
+      name: "plot_chart",
+      description: "Draw something new in the chart at the top of the page. This is the site's " \
+                   "one visualization surface and you control what it shows. Pick a VIEW — " \
+                   "cycles (all 24 World Cup cycles), opponents, venues (host cities), or " \
+                   "scorers — and a MEASURE for the bar heights. Optionally narrow everything " \
+                   "to one opponent. The bars re-animate on the reader's screen, so a question " \
+                   "like \"were they good in the seventies or just busy?\" becomes visible " \
+                   "rather than described. Scorers are always measured in goals.",
+      kind: :page, action: "plotChart", read_only: false,
+      schema: {
+        view: { type: "string", description: "What the bars are: cycles, opponents, venues, or scorers",
+                enum: Chart::VIEWS.keys, required: true },
+        metric: { type: "string", description: "What the bar heights measure. Ignored for scorers.",
+                  enum: Chart::METRICS.keys },
+        opponent: { type: "string", description: "Narrow to one opponent, e.g. \"Mexico\". Omit for all." }
+      }),
 
     Tool.new(
       name: "read_current_page",

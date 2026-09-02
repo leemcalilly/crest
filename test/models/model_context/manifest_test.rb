@@ -22,8 +22,7 @@ class ModelContext::ManifestTest < ActiveSupport::TestCase
 
   test "page tools act on the browser and name no URL" do
     pages = @tools.select { it.kind == :page }
-    assert_equal %w[ set_cycle highlight_cycle plot_cycles filter_by_opponent read_current_page ],
-                 pages.map(&:name)
+    assert_equal %w[ set_cycle highlight_cycle plot_chart read_current_page ], pages.map(&:name)
     pages.each { assert_not it.action.start_with?("/") }
   end
 
@@ -32,10 +31,10 @@ class ModelContext::ManifestTest < ActiveSupport::TestCase
     assert @tools.find { it.name == "read_current_page" }.read_only
   end
 
-  test "the measures a tool offers are the measures the model computes" do
-    enum = @tools.find { it.name == "plot_cycles" }.schema.dig(:metric, :enum)
-    assert_equal Cycle::METRICS.keys, enum
-    assert_equal Cycle.first.metrics.keys.map(&:to_s).sort, enum.sort
+  test "the views and measures a tool offers are the ones the chart can draw" do
+    schema = @tools.find { it.name == "plot_chart" }.schema
+    assert_equal Chart::VIEWS.keys, schema.dig(:view, :enum)
+    assert_equal Chart::METRICS.keys, schema.dig(:metric, :enum)
   end
 
   test "required arguments reach the schema" do

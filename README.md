@@ -11,8 +11,8 @@ entry, including the demo video, is in [SUBMISSION.md](SUBMISSION.md).
 
 ## What WebMCP does here
 
-crest registers nine tools with the browser through `document.modelContext`.
-Four read, five act on the page you are looking at:
+crest registers eight tools with the browser through `document.modelContext`.
+Four read, four act on the page you are looking at:
 
 | Tool | Kind | What it does |
 |---|---|---|
@@ -22,11 +22,10 @@ Four read, five act on the page you are looking at:
 | `read_player` | read | A scorer's card, with goals broken down by cycle |
 | `set_cycle` | **page** | Moves the time machine. The reader watches it happen |
 | `highlight_cycle` | **page** | Lights one bar on the timeline while you explain |
-| `plot_cycles` | **page** | Redraws the timeline by wins, goals, goal difference or win rate |
-| `filter_by_opponent` | **page** | Redraws the same bars for one opponent across all 24 cycles |
+| `plot_chart` | **page** | Draws a different view in the chart: cycles, opponents, venues or scorers |
 | `read_current_page` | **page** | What the reader is looking at right now |
 
-The last five are the reason this is WebMCP and not a server. A server tool can
+The last four are the reason this is WebMCP and not a server. A server tool can
 *describe* the timeline. A page tool **moves** it, so the person and the agent
 are looking at the same thing at the same moment.
 

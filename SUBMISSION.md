@@ -82,12 +82,17 @@ ask the page what the reader is actually looking at, so "compare this to the
 previous cycle" resolves without the human restating context the screen holds.
 
 **The agent composes a visualization inside your page.** This is the one we would
-point a judge at first. Ask *"were they actually any good in the seventies, or just
-playing a lot?"* and `plot_cycles` redraws all 24 bars from match counts to win
-rate — the chart re-animates and the answer becomes visible rather than described.
-Switch it to goal difference and half the timeline turns red: the United States
-used to lose on aggregate, and stopped. Then `filter_by_opponent("Mexico")` narrows
-the same bars to 76 matches against one rival across a century.
+point a judge at first. crest has a single chart panel, and `plot_chart` lets the
+agent decide what it shows — World Cup cycles, opponents, host cities, or scorers —
+and what the bar heights measure.
+
+Ask *"were they actually any good in the seventies, or just playing a lot?"* and the
+24 cycle bars redraw from match counts to win rate. Switch to goal difference and
+half the timeline turns red: the United States used to lose on aggregate, and
+stopped. Ask *"who do they play most?"* and the same panel becomes a ranking of
+opponents — Mexico at 76. Ask where, and it becomes host cities, where Mexico City
+leads at 27. The cycles view is one view among several, not the only thing the
+panel can draw.
 
 A server MCP could return those numbers, or render an image and hand it over. It
 could not reshape the chart the reader is already looking at. That is the whole
@@ -98,7 +103,7 @@ and starts operating the interface alongside you.
 
 ## How WebMCP was implemented
 
-Nine tools — four read, five act on the live page.
+Eight tools — four read, four act on the live page.
 
 | Tool | Kind | What it does |
 |---|---|---|
@@ -108,8 +113,7 @@ Nine tools — four read, five act on the live page.
 | `read_player` | read | A scorer's card, goals broken down by cycle |
 | `set_cycle` | **page** | Moves the time machine; the reader watches it happen |
 | `highlight_cycle` | **page** | Lights one bar while the agent explains |
-| `plot_cycles` | **page** | Redraws the timeline by wins, goals, goal difference or win rate |
-| `filter_by_opponent` | **page** | Redraws the same bars for one opponent across all 24 cycles |
+| `plot_chart` | **page** | Draws a different view in the chart: cycles, opponents, venues or scorers |
 | `read_current_page` | **page** | What the reader is looking at right now |
 
 **The catalog is Ruby, not JavaScript.** [`app/models/model_context/`](app/models/model_context)

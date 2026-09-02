@@ -7,6 +7,7 @@ Rails.application.routes.draw do
 
   resource :sources, only: :show
   resource :tools, only: :show
+  resource :chart, only: :show
 
   get "up" => "rails/health#show", as: :rails_health_check
 end

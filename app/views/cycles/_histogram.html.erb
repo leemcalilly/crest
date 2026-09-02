@@ -1,24 +1,29 @@
 <% metrics = cycles.index_with(&:metrics) %>
 <% max = metrics.values.map { it[:matches] }.max.to_f %>
-<div class="bars" data-model-context-target="histogram">
-  <% cycles.each do |c| %>
-    <% m = metrics[c] %>
-    <% klass = if c == current then "on" elsif c.interrupted? then "war" elsif m[:matches] <= 15 then "faint" else "" end %>
-    <%= link_to cycle_path(c), class: klass,
-        title: "#{c.name} — #{m[:matches]} matches",
-        style: "height: #{[ (m[:matches] / max * 124).round, 2 ].max}px;",
-        data: { cycle: c.slug, name: c.name,
-                matches: m[:matches], wins: m[:wins], goals_for: m[:goals_for],
-                goal_difference: m[:goal_difference], win_rate: m[:win_rate] } do %><% end %>
-  <% end %>
-</div>
-<div class="ticks">
-  <% cycles.each_with_index do |c, i| %>
-    <div class="cap" style="<%= "color: var(--oxblood);" if c == current %>">
-      <%= (i.zero? || c.world_cup_year.to_i % 20 == 10 || c == current || i == cycles.size - 1) ? (c.world_cup_year || "<1930") : "" %>
-    </div>
-  <% end %>
-</div>
-<div class="cap" style="padding-top: 10px;" data-model-context-target="caption">
-  Matches played &middot; all opponents
-</div>
+<figure class="chart">
+  <figcaption class="chart-label">
+    <span class="cap" data-model-context-target="caption">Matches played &middot; all opponents</span>
+    <span class="cap chart-hint">Click a bar to travel</span>
+  </figcaption>
+
+  <div class="bars" data-model-context-target="histogram">
+    <% cycles.each do |c| %>
+      <% m = metrics[c] %>
+      <% klass = if c == current then "on" elsif c.interrupted? then "war" elsif m[:matches] <= 15 then "faint" else "" end %>
+      <%= link_to cycle_path(c), class: klass,
+          title: "#{c.name} — #{m[:matches]} matches",
+          style: "height: #{[ (m[:matches] / max * 160).round, 2 ].max}px;",
+          data: { cycle: c.slug, name: c.name,
+                  matches: m[:matches], wins: m[:wins], goals_for: m[:goals_for],
+                  goal_difference: m[:goal_difference], win_rate: m[:win_rate] } do %><% end %>
+    <% end %>
+  </div>
+
+  <div class="ticks">
+    <% cycles.each_with_index do |c, i| %>
+      <div class="cap" style="<%= "color: var(--oxblood);" if c == current %>">
+        <%= (i.zero? || c.world_cup_year.to_i % 20 == 10 || c == current || i == cycles.size - 1) ? (c.world_cup_year || "<1930") : "" %>
+      </div>
+    <% end %>
+  </div>
+</figure>
