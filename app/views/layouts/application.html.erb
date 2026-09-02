@@ -17,7 +17,7 @@
   </head>
 
   <body data-controller="model-context">
-    <%= render "shared/waves" %>
+    <%= render "shared/waves", edge: "top" %>
 
     <div class="wrap">
       <header class="masthead">
@@ -53,5 +53,7 @@
         </p>
       </footer>
     </div>
+
+    <%= render "shared/waves", edge: "bottom" %>
   </body>
 </html>

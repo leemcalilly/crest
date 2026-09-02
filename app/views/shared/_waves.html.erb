@@ -1,19 +1,22 @@
-<%# The 2026 kit: red and white bands rippling like a flag in wind.
-    Drawn once, fixed behind everything, and kept faint enough that the
-    agate tables stay the loudest thing on the page. %>
-<div class="waves" aria-hidden="true">
-  <svg viewBox="0 0 1600 900" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg">
+<%# The 2026 kit. The hem at the foot of the page is the real thing — thick
+    bands with air between them. The collar at the top is a single light
+    ripple, an accent rather than a repeat. Decorative only. %>
+<% hem = edge == "bottom" %>
+<% amplitude = hem ? 15 : 5 %>
+<% thickness = hem ? 26 : 6 %>
+<% height = hem ? 168 : 30 %>
+<% stripes = hem ? [ [ 8, 0.92, "s1" ], [ 62, 0.72, "s2" ], [ 116, 0.5, "s3" ] ] : [ [ 10, 0.4, "s2" ] ] %>
+
+<div class="waves <%= edge %>" aria-hidden="true">
+  <svg viewBox="0 0 2400 <%= height %>" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg"
+       style="height: <%= height %>px;">
     <defs>
-      <path id="band" d="M-400,0 C-100,-42 200,42 500,0 C800,-42 1100,42 1400,0 C1700,-42 2000,42 2300,0 L2300,66 C2000,108 1700,24 1400,66 C1100,108 800,24 500,66 C200,108 -100,24 -400,66 Z"></path>
+      <path id="ripple-<%= edge %>" d="<%= ripple_path(amplitude:, thickness:) %>"></path>
     </defs>
     <g fill="#8c1d18">
-      <use href="#band" y="30" class="w1"></use>
-      <use href="#band" y="170" class="w2"></use>
-      <use href="#band" y="310" class="w3"></use>
-      <use href="#band" y="450" class="w1"></use>
-      <use href="#band" y="590" class="w2"></use>
-      <use href="#band" y="730" class="w3"></use>
-      <use href="#band" y="870" class="w1"></use>
+      <% stripes.each do |y, opacity, speed| %>
+        <use href="#ripple-<%= edge %>" y="<%= y %>" class="<%= speed %>" opacity="<%= opacity %>"></use>
+      <% end %>
     </g>
   </svg>
 </div>
