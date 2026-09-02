@@ -153,6 +153,35 @@ if any controller assigns to a reserved Stimulus property.
 
 ---
 
+## Try it yourself — the repeatable test
+
+This is the sequence in the demo video, and it is also how anyone can verify the
+entry. It needs no setup: in ChatGPT, ask it to open **crest.soccer** in its
+browser and tell you what tools the site offers, then work down the list.
+
+Everything below happens in the one chart at the top of the page. Nothing is
+clicked.
+
+| # | Ask | What should happen | Tool |
+|---|---|---|---|
+| 1 | *"Open crest.soccer and tell me what tools this site gives you."* | Eight tools listed — four read, four act on the page | discovery |
+| 2 | *"Were they actually any good in the seventies, or just playing a lot?"* | The 24 cycle bars redraw from match counts to win rate | `plot_chart` |
+| 3 | *"What about goal difference?"* | Half the timeline turns red — the United States used to lose on aggregate, and stopped | `plot_chart` |
+| 4 | *"Who do they play the most?"* | The same panel becomes a ranking of opponents. Mexico, 76 matches | `plot_chart` |
+| 5 | *"And where do they play?"* | Host cities. Mexico City leads with 27, one ahead of Washington, D.C. | `plot_chart` |
+| 6 | *"Show me only the matches against Mexico, cycle by cycle."* | Back to cycles, narrowed to one rivalry across a century | `plot_chart` |
+| 7 | *"Take me to the cycle that ended at the home World Cup."* | The page navigates to 1994 | `set_cycle` |
+| 8 | *"Which cycle had no tournament at all?"* | The 1939–1950 bar lights up: twelve years, no World Cup | `highlight_cycle` |
+
+**If the chart does not move**, the agent is describing the page instead of using
+its tools. Ask it to use the site's tools, or check that the badge in the header
+says they are ready.
+
+The same list is on the site at [crest.soccer/tools](https://crest.soccer/tools),
+alongside instructions for enabling WebMCP in Chrome.
+
+---
+
 ## On the data, and what crest refuses to invent
 
 Everything comes from [martj42/international_results](https://github.com/martj42/international_results),
