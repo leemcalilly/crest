@@ -7,7 +7,7 @@ import { Controller } from "@hotwired/stimulus"
 // Document, but shipping builds have exposed it on Navigator, so we accept
 // either rather than betting the whole site on one spelling.
 export default class extends Controller {
-  static targets = ["indicator", "label", "histogram", "cycleName"]
+  static targets = ["indicator", "label", "histogram", "cycleName", "caption"]
 
   connect() {
     this.aborter = new AbortController()
@@ -112,6 +112,10 @@ export default class extends Controller {
         return this.setCycle(input.cycle)
       case "highlightCycle":
         return this.highlightCycle(input.cycle)
+      case "plotCycles":
+        return this.plotCycles(input.metric)
+      case "filterByOpponent":
+        return this.filterByOpponent(input.opponent)
       case "readCurrentPage":
         return this.readCurrentPage()
       default:
@@ -136,12 +140,119 @@ export default class extends Controller {
     return { highlighted: slug, note: "The bar is lit on the reader's screen." }
   }
 
+  // Redraw the timeline by a different measure. Every value is already in the
+  // page as a data attribute, so this is instant and needs no server.
+  METRICS = {
+    matches: "Matches played",
+    wins: "Matches won",
+    goals_for: "Goals scored",
+    goal_difference: "Goal difference",
+    win_rate: "Win rate"
+  }
+
+  plotCycles(metric) {
+    if (!this.hasHistogramTarget) return { error: "There is no timeline on this page." }
+
+    const key = String(metric || "").trim()
+    if (!this.METRICS[key]) {
+      return { error: `Unknown measure "${metric}". Use one of: ${Object.keys(this.METRICS).join(", ")}.` }
+    }
+
+    this.metric = key
+    const values = this.draw((bar) => Number(bar.dataset[this.camel(key)]))
+    return {
+      plotted: key,
+      label: this.METRICS[key],
+      note: "The bars have re-animated on the reader's screen.",
+      highest: values.highest,
+      lowest: values.lowest
+    }
+  }
+
+  // Narrow the same bars to one opponent, across every cycle.
+  async filterByOpponent(opponent) {
+    if (!this.hasHistogramTarget) return { error: "There is no timeline on this page." }
+
+    const name = String(opponent || "").trim()
+    if (!name || name.toLowerCase() === "all") {
+      this.opponent = null
+      this.bars().forEach((bar) => { bar.dataset.filtered = "" })
+      this.draw((bar) => Number(bar.dataset[this.camel(this.metric || "matches")]))
+      return { filtered: null, note: "The timeline shows every opponent again." }
+    }
+
+    const response = await fetch(`/cycles.json?opponent=${encodeURIComponent(name)}`,
+                                { headers: { Accept: "application/json" } })
+    if (!response.ok) return { error: `crest answered ${response.status} looking up ${name}.` }
+
+    const { cycles } = await response.json()
+    const bySlug = Object.fromEntries(cycles.map((c) => [c.slug, c]))
+    const metric = this.metric || "matches"
+
+    let total = 0
+    this.bars().forEach((bar) => {
+      const row = bySlug[bar.dataset.cycle]
+      const value = row ? Number(row[metric]) : 0
+      bar.dataset.filtered = String(value)
+      if (row) total += Number(row.matches)
+    })
+
+    if (total === 0) {
+      this.bars().forEach((bar) => { bar.dataset.filtered = "" })
+      this.draw((bar) => Number(bar.dataset[this.camel(metric)]))
+      return { error: `The United States has no recorded matches against "${name}". The timeline is unchanged.` }
+    }
+
+    this.opponent = name
+    this.draw((bar) => Number(bar.dataset.filtered))
+    return { filtered: name, matches: total, measure: this.METRICS[metric],
+             note: `The timeline now shows only matches against ${name}.` }
+  }
+
+  // One drawing routine for both tools. Negative values keep their sign.
+  draw(valueOf) {
+    const bars = this.bars()
+    const values = bars.map(valueOf)
+    const scale = Math.max(...values.map((v) => Math.abs(v)), 1)
+
+    let highest = null, lowest = null
+    bars.forEach((bar, i) => {
+      const value = values[i]
+      const height = Math.max(Math.round((Math.abs(value) / scale) * 124), 2)
+      bar.style.height = `${height}px`
+      bar.classList.toggle("negative", value < 0)
+      bar.classList.toggle("dim", value === 0)
+      bar.title = `${bar.dataset.name} — ${value}`
+      if (!highest || value > highest.value) highest = { cycle: bar.dataset.cycle, value }
+      if (!lowest || value < lowest.value) lowest = { cycle: bar.dataset.cycle, value }
+    })
+
+    this.caption(values.some((v) => v < 0))
+    return { highest, lowest }
+  }
+
+  caption(hasNegatives = false) {
+    if (!this.hasCaptionTarget) return
+    const measure = this.METRICS[this.metric || "matches"]
+    const who = this.opponent ? `against ${this.opponent}` : "all opponents"
+    // A negative bar grows upward like any other, so the colour is the only
+    // thing carrying its sign. Say so rather than leaving it to be guessed.
+    const key = hasNegatives ? " · red bars are negative" : ""
+    this.captionTarget.textContent = `${measure} · ${who}${key}`
+  }
+
+  bars() { return Array.from(this.histogramTarget.querySelectorAll("a")) }
+
+  camel(key) { return key.replace(/_([a-z])/g, (_, c) => c.toUpperCase()) }
+
   readCurrentPage() {
     return {
       url: window.location.pathname,
       title: document.title,
       cycle_on_screen: this.hasCycleNameTarget ? this.cycleNameTarget.textContent.trim() : null,
-      cycles_visible: this.hasHistogramTarget
+      cycles_visible: this.hasHistogramTarget,
+      timeline_showing: this.hasHistogramTarget ? (this.METRICS[this.metric || "matches"]) : null,
+      timeline_filtered_to: this.opponent || null
     }
   }
 

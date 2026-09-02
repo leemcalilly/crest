@@ -3,7 +3,17 @@ class CyclesController < ApplicationController
     @cycles = Cycle.chronological.includes(:matches)
     respond_to do |format|
       format.html { redirect_to cycle_path(@cycles.last) }
-      format.json { render json: { cycles: @cycles.map { |c| c.as_json.slice(:slug, :name, :world_cup_year, :from, :to).merge(matches: c.matches.size) } } }
+      format.json do
+        opponent = params[:opponent].presence
+        render json: {
+          opponent: opponent,
+          cycles: @cycles.map { |c|
+            measures = opponent ? c.metrics_against(opponent) : c.metrics
+            { slug: c.slug, name: c.name, world_cup_year: c.world_cup_year,
+              from: c.starts_on.year, to: c.ends_on.year }.merge(measures)
+          }
+        }
+      end
     end
   end
 

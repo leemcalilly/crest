@@ -27,6 +27,28 @@ class Cycle < ApplicationRecord
 
   def record = Match::Record.new(matches)
 
+  # The measures the timeline can be drawn by. Computed here so the page can
+  # carry all of them and redraw instantly, with no round trip.
+  METRICS = {
+    "matches" => "matches played",
+    "wins" => "matches won",
+    "goals_for" => "goals scored",
+    "goal_difference" => "goal difference",
+    "win_rate" => "win rate"
+  }.freeze
+
+  # Same measures, optionally narrowed to one opponent.
+  def metrics_against(opponent) = metrics(matches.against(opponent))
+
+  def metrics(scope = matches)
+    r = Match::Record.new(scope)
+    { matches: r.played,
+      wins: r.won,
+      goals_for: r.goals_for,
+      goal_difference: r.goals_for - r.goals_against,
+      win_rate: r.played.zero? ? 0 : ((r.won.to_f / r.played) * 100).round }
+  end
+
   # The JSON contract. One place, shared by the page's own URLs and by
   # every tool an agent calls.
   def as_json(options = nil)

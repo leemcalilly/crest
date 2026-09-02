@@ -19,6 +19,28 @@ class CycleTest < ActiveSupport::TestCase
     assert_not Cycle.where(world_cup_year: nil).first.interrupted?
   end
 
+  test "every measure the timeline can be drawn by is computed" do
+    m = Cycle.find_by!(slug: "1994").metrics
+    assert_equal 97, m[:matches]
+    assert_equal 31, m[:wins]
+    assert_equal 5, m[:goal_difference]
+    assert_equal 32, m[:win_rate]
+  end
+
+  test "goal difference goes negative in the lean cycles" do
+    assert_operator Cycle.find_by!(slug: "1950").metrics[:goal_difference], :<, 0
+  end
+
+  test "a cycle with no matches reports a win rate of zero, not a division error" do
+    empty = Cycle.chronological.find { it.matches.empty? } ||
+            Cycle.find_by!(slug: "1994")
+    assert_equal 0, empty.metrics_against("Nowhere")[:win_rate]
+  end
+
+  test "measures narrow to one opponent" do
+    assert_equal 5, Cycle.find_by!(slug: "1994").metrics_against("Mexico")[:matches]
+  end
+
   test "cycles link forward and back" do
     cycle = Cycle.find_by!(slug: "1994")
     assert_equal "1990", cycle.previous.slug

@@ -53,6 +53,25 @@ class ModelContext::Manifest
       schema: { cycle: { type: "string", description: "Cycle slug, e.g. \"1994\"", required: true } }),
 
     Tool.new(
+      name: "plot_cycles",
+      description: "Redraw the timeline by a different measure. The bars re-animate on the " \
+                   "reader's screen from match counts to whichever measure you choose, so a " \
+                   "question like \"were they actually good in the seventies, or just playing a " \
+                   "lot?\" becomes visible instead of described. Measures: matches, wins, " \
+                   "goals_for, goal_difference, win_rate.",
+      kind: :page, action: "plotCycles", read_only: false,
+      schema: { metric: { type: "string", description: "One of: matches, wins, goals_for, goal_difference, win_rate",
+                          enum: Cycle::METRICS.keys, required: true } }),
+
+    Tool.new(
+      name: "filter_by_opponent",
+      description: "Redraw the timeline to show only matches against one opponent, across all " \
+                   "24 cycles. Use it to show a rivalry taking shape over time. Pass no name, " \
+                   "or \"all\", to clear the filter and show every opponent again.",
+      kind: :page, action: "filterByOpponent", read_only: false,
+      schema: { opponent: { type: "string", description: "Opponent name, e.g. \"Mexico\". Omit or pass \"all\" to clear." } }),
+
+    Tool.new(
       name: "read_current_page",
       description: "Read what the person is looking at right now: which page, and which cycle or " \
                    "player is on screen. Call this first so you talk about what they can see.",

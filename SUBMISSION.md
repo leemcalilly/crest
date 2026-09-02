@@ -81,11 +81,24 @@ application's state become the same act.
 ask the page what the reader is actually looking at, so "compare this to the
 previous cycle" resolves without the human restating context the screen holds.
 
+**The agent composes a visualization inside your page.** This is the one we would
+point a judge at first. Ask *"were they actually any good in the seventies, or just
+playing a lot?"* and `plot_cycles` redraws all 24 bars from match counts to win
+rate — the chart re-animates and the answer becomes visible rather than described.
+Switch it to goal difference and half the timeline turns red: the United States
+used to lose on aggregate, and stopped. Then `filter_by_opponent("Mexico")` narrows
+the same bars to 76 matches against one rival across a century.
+
+A server MCP could return those numbers, or render an image and hand it over. It
+could not reshape the chart the reader is already looking at. That is the whole
+distinction, and it is the moment where the agent stops being a research assistant
+and starts operating the interface alongside you.
+
 ---
 
 ## How WebMCP was implemented
 
-Seven tools — four read, three act on the live page.
+Nine tools — four read, five act on the live page.
 
 | Tool | Kind | What it does |
 |---|---|---|
@@ -95,6 +108,8 @@ Seven tools — four read, three act on the live page.
 | `read_player` | read | A scorer's card, goals broken down by cycle |
 | `set_cycle` | **page** | Moves the time machine; the reader watches it happen |
 | `highlight_cycle` | **page** | Lights one bar while the agent explains |
+| `plot_cycles` | **page** | Redraws the timeline by wins, goals, goal difference or win rate |
+| `filter_by_opponent` | **page** | Redraws the same bars for one opponent across all 24 cycles |
 | `read_current_page` | **page** | What the reader is looking at right now |
 
 **The catalog is Ruby, not JavaScript.** [`app/models/model_context/`](app/models/model_context)

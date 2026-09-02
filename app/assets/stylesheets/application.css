@@ -205,3 +205,12 @@ footer .credit { font-family: var(--mono); font-size: 11px; line-height: 1.9; co
 
 /* An agent pointing at a cycle lights the bar for the reader. */
 .bars a.lit { background: var(--oxblood); outline: 2px solid var(--oxblood); outline-offset: 2px; }
+
+/* The agent can redraw the timeline by a different measure. Negative values —
+   goal difference in the lean years — read in oxblood rather than pretending
+   to be small positive bars. */
+.bars a { transition: height 420ms cubic-bezier(0.22, 1, 0.36, 1), background-color 300ms ease; }
+.bars a.negative { background: var(--oxblood); opacity: 0.55; }
+.bars a.negative:hover { opacity: 1; }
+.bars a.dim { background: var(--rule-faint); }
+@media (prefers-reduced-motion: reduce) { .bars a { transition: none; } }
