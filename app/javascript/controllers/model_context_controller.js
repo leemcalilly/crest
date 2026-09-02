@@ -184,7 +184,11 @@ export default class extends Controller {
       node.title = `${bar.title} — ${value}`
       node.dataset.cycle = bar.key
       node.dataset.name = bar.title
-      if (value < 0) node.classList.add("negative")
+      // Only a diverging measure earns colour. Bars that are all positive —
+      // matches played, goals scored — stay neutral rather than turning the
+      // whole chart green for no reason.
+      if (hasNegatives && value < 0) node.classList.add("negative")
+      if (hasNegatives && value > 0) node.classList.add("positive")
       if (value === 0) node.classList.add("dim")
       return node
     }))

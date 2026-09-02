@@ -149,12 +149,12 @@
 </section>
 
 <section style="padding: 26px 0 0;">
-  <div class="cap" style="padding-bottom: 12px; color: var(--oxblood);">Tools that drive the site</div>
+  <div class="cap" style="padding-bottom: 12px; color: var(--green);">Tools that drive the site</div>
   <table>
     <tbody>
       <% @tools.select { it.kind == :page }.each do |tool| %>
         <tr>
-          <td class="num" style="width: 190px; vertical-align: top; font-weight: 600; color: var(--oxblood);"><%= tool.name %></td>
+          <td class="num" style="width: 190px; vertical-align: top; font-weight: 600; color: var(--green);"><%= tool.name %></td>
           <td style="font-family: var(--mono); font-size: 12px; line-height: 1.8; color: var(--ink-soft);"><%= tool.description %></td>
         </tr>
       <% end %>

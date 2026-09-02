@@ -1,5 +1,9 @@
 /* crest — the Agate direction.
-   Paper and ink, one oxblood accent, navy reserved for the crest itself. */
+   Paper and ink. Three colours carry meaning and never swap jobs:
+     oxblood — a loss, a negative number, a thing that is missing
+     green   — a win, a positive number, a capability that is working
+     navy    — the crest, and the cycle you are standing in
+   Section labels use oxblood as a plain accent, never as a warning. */
 
 :root {
   --paper: #f4f1e8;
@@ -13,7 +17,8 @@
   --bar-faint: #c9c2b2;
   --oxblood: #8c1d18;
   --navy: #14213d;
-  --live: #4a6741;
+  --green: #4a6741;
+  --live: #4a6741;   /* alias: the WebMCP badge when tools are ready */
 
   --serif: "IBM Plex Serif", Georgia, "Times New Roman", serif;
   --mono: "IBM Plex Mono", ui-monospace, "SF Mono", Menlo, monospace;
@@ -142,7 +147,7 @@ h1.display {
 
 .stats { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 0; padding: 22px 0 0; }
 .stats .v { font-family: var(--mono); font-weight: 600; font-size: 30px; line-height: 1; }
-.stats .v.hi { color: var(--oxblood); }
+.stats .v.hi { color: var(--green); }
 .stats .k { margin-top: 5px; }
 
 /* Cycle histogram ----------------------------------------------------- */
@@ -181,7 +186,8 @@ td.name { font-family: var(--serif); font-size: 17px; font-weight: 600; }
 td.n, th.n { text-align: right; }
 td.c, th.c { text-align: center; }
 td.faint { color: var(--ink-faint); }
-td .w { color: var(--oxblood); font-weight: 600; }
+td .w { color: var(--green); font-weight: 600; }
+td .l { color: var(--oxblood); }
 
 /* Cards --------------------------------------------------------------- */
 
@@ -226,6 +232,8 @@ footer .credit { font-family: var(--mono); font-size: 11px; line-height: 1.9; co
    to be small positive bars. */
 .bars a { transition: height 420ms cubic-bezier(0.22, 1, 0.36, 1), background-color 300ms ease; }
 .bars a.negative { background: var(--oxblood); opacity: 0.9; }
+.bars a.positive { background: var(--green); opacity: 0.85; }
+.bars a.positive:hover { opacity: 1; }
 .bars a.negative:hover { opacity: 1; }
 .bars a.dim { background: var(--rule-faint); }
 @media (prefers-reduced-motion: reduce) { .bars a { transition: none; } }
@@ -262,4 +270,38 @@ footer .credit { font-family: var(--mono); font-size: 11px; line-height: 1.9; co
 }
 .tryit .ask { font-family: var(--serif); font-size: 17px; font-weight: 600; text-wrap: pretty; }
 .tryit .saw { font-family: var(--mono); font-size: 11px; line-height: 1.8; color: var(--ink-faint); }
-.tryit .saw em { color: var(--oxblood); font-style: normal; }
+.tryit .saw em { color: var(--green); font-style: normal; }
+
+/* The jersey, behind everything ------------------------------------------
+   Red bands rippling like a flag. Fixed, non-interactive, and faint: this is
+   texture, not decoration competing with the numbers. Each row drifts at its
+   own pace so the field never reads as one sliding sheet. */
+.waves {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  overflow: hidden;
+  opacity: 0.055;
+}
+.waves svg { width: 100%; height: 100%; display: block; }
+.waves use { will-change: transform; }
+
+.waves .w1 { animation: drift 64s linear infinite; }
+.waves .w2 { animation: drift 92s linear infinite reverse; }
+.waves .w3 { animation: drift 78s linear infinite; }
+
+@keyframes drift {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-900px); }
+}
+
+/* Content sits above the field. */
+body > .wrap { position: relative; z-index: 1; }
+
+/* Paper behind the reading surfaces, so bands never run through a table. */
+.card, .badge { background-color: var(--paper-edge); }
+
+@media (prefers-reduced-motion: reduce) {
+  .waves use { animation: none; }
+}
