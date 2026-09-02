@@ -10,11 +10,11 @@ export default class extends Controller {
   static targets = ["indicator", "label", "histogram", "cycleName"]
 
   connect() {
-    this.controller = new AbortController()
+    this.aborter = new AbortController()
 
-    this.context = this.findModelContext()
-    if (!this.context) {
-      this.report("Site tools · not supported here")
+    this.modelContext = this.findModelContext()
+    if (!this.modelContext) {
+      this.report("Agent tools · not in this browser")
       return
     }
 
@@ -42,26 +42,29 @@ export default class extends Controller {
 
     if (this.toolCount > 0) {
       this.element.querySelector(".tools")?.classList.add("live")
-      this.report(`Site tools · ${this.toolCount}`)
+      this.report(`${this.toolCount} agent tools ready`)
       console.info(`[crest] registered ${this.toolCount} WebMCP tools:`,
                    tools.map((t) => t.name).join(", "))
     } else {
-      this.report("Site tools · none registered")
+      this.report("Agent tools · none registered")
     }
   }
 
   failed(tool, error) {
     this.toolCount = Math.max(0, this.toolCount - 1)
     console.warn(`[crest] tool ${tool.name} failed to register`, error)
-    this.report(this.toolCount > 0 ? `Site tools · ${this.toolCount}` : "Site tools · unavailable")
+    this.report(this.toolCount > 0 ? `${this.toolCount} agent tools ready` : "Agent tools · unavailable")
   }
 
   disconnect() {
     // Page-scoped tools unregister themselves on Turbo navigation.
-    this.controller?.abort()
+    this.aborter?.abort()
   }
 
   // Document first, Navigator second — whichever this browser actually has.
+  // NOTE: the result is stored on `this.modelContext`, never `this.context`.
+  // Stimulus owns `this.context`; assigning to it breaks every target helper
+  // and every action on the controller.
   findModelContext() {
     for (const host of [document, navigator, window]) {
       const context = host && host.modelContext
@@ -71,13 +74,13 @@ export default class extends Controller {
   }
 
   register(tool) {
-    return this.context.registerTool({
+    return this.modelContext.registerTool({
       name: tool.name,
       description: tool.description,
       inputSchema: tool.inputSchema,
       annotations: tool.annotations,
       execute: (input) => this.run(tool, input || {})
-    }, { signal: this.controller.signal })
+    }, { signal: this.aborter.signal })
   }
 
   async run(tool, input) {
@@ -151,7 +154,7 @@ export default class extends Controller {
     if (!this.hasLabelTarget) return
     this.labelTarget.textContent = name
     clearTimeout(this.resetAt)
-    this.resetAt = setTimeout(() => this.report(`Site tools · ${this.toolCount || 7}`), 4000)
+    this.resetAt = setTimeout(() => this.report(`${this.toolCount || 7} agent tools ready`), 4000)
   }
 
   report(text) {

@@ -6,6 +6,7 @@ Rails.application.routes.draw do
   resources :matches, only: %i[ index show ]
 
   resource :sources, only: :show
+  resource :tools, only: :show
 
   get "up" => "rails/health#show", as: :rails_health_check
 end
