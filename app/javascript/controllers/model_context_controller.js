@@ -14,7 +14,7 @@ export default class extends Controller {
 
     this.modelContext = this.findModelContext()
     if (!this.modelContext) {
-      this.report("Agent tools · not in this browser")
+      this.report("how to turn it on")
       return
     }
 
@@ -41,19 +41,19 @@ export default class extends Controller {
     }
 
     if (this.toolCount > 0) {
-      this.element.querySelector(".tools")?.classList.add("live")
-      this.report(`${this.toolCount} agent tools ready`)
+      this.element.querySelector(".badge")?.classList.add("live")
+      this.report(`${this.toolCount} tools ready`)
       console.info(`[crest] registered ${this.toolCount} WebMCP tools:`,
                    tools.map((t) => t.name).join(", "))
     } else {
-      this.report("Agent tools · none registered")
+      this.report("no tools registered")
     }
   }
 
   failed(tool, error) {
     this.toolCount = Math.max(0, this.toolCount - 1)
     console.warn(`[crest] tool ${tool.name} failed to register`, error)
-    this.report(this.toolCount > 0 ? `${this.toolCount} agent tools ready` : "Agent tools · unavailable")
+    this.report(this.toolCount > 0 ? `${this.toolCount} tools ready` : "unavailable")
   }
 
   disconnect() {
@@ -151,13 +151,15 @@ export default class extends Controller {
   }
 
   announce(name) {
-    if (!this.hasLabelTarget) return
-    this.labelTarget.textContent = name
+    if (this.labelTargets.length === 0) return
+    this.report(name)
     clearTimeout(this.resetAt)
-    this.resetAt = setTimeout(() => this.report(`${this.toolCount || 7} agent tools ready`), 4000)
+    this.resetAt = setTimeout(() => this.report(`${this.toolCount || 7} tools ready`), 4000)
   }
 
+  // There is more than one place that shows status — the header badge and the
+  // panel on the tools page. Write to every one of them.
   report(text) {
-    if (this.hasLabelTarget) this.labelTarget.textContent = text
+    this.labelTargets.forEach((label) => { label.textContent = text })
   }
 }

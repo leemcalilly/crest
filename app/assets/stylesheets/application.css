@@ -13,6 +13,7 @@
   --bar-faint: #c9c2b2;
   --oxblood: #8c1d18;
   --navy: #14213d;
+  --live: #4a6741;
 
   --serif: "IBM Plex Serif", Georgia, "Times New Roman", serif;
   --mono: "IBM Plex Mono", ui-monospace, "SF Mono", Menlo, monospace;
@@ -89,12 +90,32 @@ a:hover { color: #5c1310; text-decoration: underline; }
   text-decoration: none;
 }
 
-.tools { display: flex; align-items: center; gap: 8px; }
-.tools .dot {
+/* Says two things at once: this site speaks WebMCP, and here is what your
+   browser can do about it. Muted until the tools actually register. */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  border: 1px solid var(--rule);
+  padding: 6px 11px;
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+  white-space: nowrap;
+}
+.badge:hover { border-color: var(--ink); color: var(--ink); text-decoration: none; }
+.badge .mark { color: var(--ink); font-weight: 600; }
+.badge .state::before { content: "· "; }
+.badge .dot {
   width: 7px; height: 7px; border-radius: 50%;
   background: var(--bar-faint);
+  flex: none;
 }
-.tools.live .dot { background: var(--oxblood); }
+.badge.live { border-color: var(--live); }
+.badge.live .dot { background: var(--live); box-shadow: 0 0 0 3px rgba(74, 103, 65, 0.15); }
+.badge.live .state { color: var(--live); }
 
 /* Type ---------------------------------------------------------------- */
 

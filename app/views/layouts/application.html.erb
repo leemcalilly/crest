@@ -27,14 +27,14 @@
         <nav class="nav cap">
           <%= link_to "Cycles", cycles_path, class: ("on" if controller_name == "cycles") %>
           <%= link_to "Players", players_path, class: ("on" if controller_name == "players") %>
-          <%= link_to "Agent tools", tools_path, class: ("on" if controller_name == "tools") %>
           <%= link_to "Sources", sources_path, class: ("on" if controller_name == "sources") %>
         </nav>
 
-        <%= link_to tools_path, class: "tools cap", title: "What an AI agent can do on this page",
+        <%= link_to tools_path, class: "badge", title: "This site offers tools to AI agents. Learn how to use them.",
                     data: { model_context_target: "indicator" } do %>
           <span class="dot"></span>
-          <span data-model-context-target="label">Agent tools</span>
+          <span class="mark">WebMCP</span>
+          <span class="state" data-model-context-target="label">how to turn it on</span>
         <% end %>
       </header>
       <hr class="rule">

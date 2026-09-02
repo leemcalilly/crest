@@ -4,10 +4,56 @@
 <section style="padding: 30px 0 0;">
   <div class="cap" style="color: var(--oxblood);">WebMCP</div>
   <h1 class="display" style="font-size: 44px;">What an agent can do here</h1>
-  <p class="lede" style="padding-top: 12px; max-width: 660px;">
+  <p class="lede" style="padding-top: 12px; max-width: 680px;">
     If you arrive with an AI agent, crest hands it a set of tools. The agent can read the record,
     and it can move this page while you watch.
   </p>
+  <p style="font-family: var(--mono); font-size: 12px; line-height: 2; color: var(--ink-soft); padding-top: 14px; max-width: 680px;">
+    <strong style="color: var(--ink);">WebMCP</strong> is a browser standard that lets a website offer
+    tools to whatever AI agent is looking at it &mdash; the way a page already offers buttons to a person.
+    The agent does not scrape or guess. It is handed a named list of things this site can do, and it
+    calls them in your browser, in your session.
+  </p>
+</section>
+
+<section style="padding: 30px 0 0;">
+  <div class="card">
+    <div class="band">
+      <div style="display: flex; align-items: center; gap: 12px;">
+        <%= render "shared/crest", width: 22, fill: "#f4f1e8", letter: "#14213d" %>
+        <span class="cap">In your browser right now</span>
+      </div>
+      <span class="cap" data-model-context-target="label">checking&hellip;</span>
+    </div>
+    <div class="body">
+      <p style="font-family: var(--mono); font-size: 12px; line-height: 2; color: var(--ink-soft); margin: 0;">
+        WebMCP is new, so most browsers do not have it yet. If this says the tools are not ready,
+        the site still works exactly as normal &mdash; you just cannot hand it to an agent.
+        Here is how to get a browser that can.
+      </p>
+      <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 24px; padding-top: 20px;">
+        <div>
+          <div class="cap" style="color: var(--navy); padding-bottom: 8px;">ChatGPT&rsquo;s browser</div>
+          <p style="font-family: var(--mono); font-size: 12px; line-height: 1.9; color: var(--ink-soft); margin: 0;">
+            Works with no setup. The tools appear under <strong>Site tools</strong> in the address bar,
+            and you can simply ask &mdash; &ldquo;take me to the 1994 cycle&rdquo;.
+          </p>
+        </div>
+        <div>
+          <div class="cap" style="color: var(--navy); padding-bottom: 8px;">Chrome</div>
+          <p style="font-family: var(--mono); font-size: 12px; line-height: 1.9; color: var(--ink-soft); margin: 0;">
+            Enable <code>chrome://flags/#enable-webmcp-testing</code> and relaunch. Chrome has no agent
+            built in, so you drive the tools yourself from the console.
+          </p>
+        </div>
+      </div>
+    </div>
+    <div class="foot">
+      Built for the <a href="https://openai.com/webmcp-challenge/">WebMCP Challenge</a>.
+      The whole implementation is about a hundred lines &mdash;
+      <a href="https://github.com/leemcalilly/crest">read it on GitHub</a>, MIT licensed.
+    </div>
+  </div>
 </section>
 
 <section style="padding: 28px 0 0;">
@@ -61,43 +107,4 @@
     </tbody>
   </table>
   <hr class="rule">
-</section>
-
-<section style="padding: 30px 0 0;">
-  <div class="card">
-    <div class="band">
-      <div style="display: flex; align-items: center; gap: 12px;">
-        <%= render "shared/crest", width: 22, fill: "#f4f1e8", letter: "#14213d" %>
-        <span class="cap">In your browser right now</span>
-      </div>
-      <span class="cap" data-model-context-target="label">checking&hellip;</span>
-    </div>
-    <div class="body">
-      <p style="font-family: var(--mono); font-size: 12px; line-height: 2; color: var(--ink-soft); margin: 0;">
-        WebMCP is new, so most browsers do not have it yet. If the badge above does not say the tools
-        are ready, the site still works normally &mdash; you just will not be able to hand it to an agent.
-      </p>
-      <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 24px; padding-top: 20px;">
-        <div>
-          <div class="cap" style="color: var(--navy); padding-bottom: 8px;">ChatGPT&rsquo;s browser</div>
-          <p style="font-family: var(--mono); font-size: 12px; line-height: 1.9; color: var(--ink-soft); margin: 0;">
-            Works with no setup. The tools appear under <strong>Site tools</strong> in the address bar,
-            and you can simply ask &mdash; &ldquo;take me to the 1994 cycle&rdquo;.
-          </p>
-        </div>
-        <div>
-          <div class="cap" style="color: var(--navy); padding-bottom: 8px;">Chrome</div>
-          <p style="font-family: var(--mono); font-size: 12px; line-height: 1.9; color: var(--ink-soft); margin: 0;">
-            Enable <code>chrome://flags/#enable-webmcp-testing</code> and relaunch. Chrome has no agent
-            built in, so you drive the tools yourself from the console.
-          </p>
-        </div>
-      </div>
-    </div>
-    <div class="foot">
-      Built for the <a href="https://openai.com/webmcp-challenge/">WebMCP Challenge</a>.
-      The whole implementation is about a hundred lines &mdash;
-      <a href="https://github.com/leemcalilly/crest">read it on GitHub</a>, MIT licensed.
-    </div>
-  </div>
 </section>
