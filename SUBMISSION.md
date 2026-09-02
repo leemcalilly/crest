@@ -17,7 +17,7 @@
 ## What it is
 
 crest is a time machine for the United States men's national soccer team. Every
-match it has ever played — 795 of them, from 1885 to the 2026 World Cup —
+match it has played — 795 of them, from 1885 to the 2026 World Cup —
 organized not by decade but by **World Cup cycle**, the four years leading to and
 including each tournament.
 

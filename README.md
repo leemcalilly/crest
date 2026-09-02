@@ -1,6 +1,6 @@
 # crest
 
-**Every match the United States has ever played.**
+**Every match the USMNT has played.**
 
 A time machine for the United States men's national team, measured in World Cup
 cycles. 795 matches, 1885 to 2026, built entirely from open data — and it hands
