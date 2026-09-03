@@ -61,14 +61,23 @@ export default class extends Controller {
     this.aborter?.abort()
   }
 
-  // Document first, Navigator second — whichever this browser actually has.
+  // The canonical call this page makes is:
+  //
+  //     document.modelContext.registerTool({ name, description, inputSchema, execute })
+  //
+  // The normative IDL puts modelContext on Document. Some shipping builds have
+  // exposed it on Navigator instead, so both are accepted rather than betting
+  // the site on one spelling.
+  //
   // NOTE: the result is stored on `this.modelContext`, never `this.context`.
   // Stimulus owns `this.context`; assigning to it breaks every target helper
   // and every action on the controller.
   findModelContext() {
-    for (const host of [document, navigator, window]) {
-      const context = host && host.modelContext
-      if (context && typeof context.registerTool === "function") return context
+    if (document.modelContext && typeof document.modelContext.registerTool === "function") {
+      return document.modelContext
+    }
+    if (navigator.modelContext && typeof navigator.modelContext.registerTool === "function") {
+      return navigator.modelContext
     }
     return null
   }

@@ -29,6 +29,35 @@ The second four are the reason this is WebMCP and not a server. A server tool ca
 *describe* the timeline. A page tool **moves** it, so the person and the agent
 are looking at the same thing at the same moment.
 
+## The registration call
+
+Rails serves JavaScript through importmap, so the call is in
+[`app/javascript/controllers/model_context_controller.js`](app/javascript/controllers/model_context_controller.js)
+rather than inline in the page. What runs is:
+
+```js
+document.modelContext.registerTool({
+  name: tool.name,                 // "plot_chart"
+  description: tool.description,   // written for a model, not a developer
+  inputSchema: tool.inputSchema,   // JSON Schema: required, enum, additionalProperties: false
+  annotations: tool.annotations,   // { readOnlyHint, untrustedContentHint }
+  execute: (input) => this.run(tool, input)
+}, { signal: this.aborter.signal })  // page-scoped tools unregister on Turbo navigation
+```
+
+The descriptors come from Ruby. Every page renders its own manifest into the
+HTML, which **is** visible in view-source:
+
+```html
+<script type="application/json" id="model-context-manifest">
+  {"tools":[{"name":"plot_chart","description":"...","kind":"page", ... }]}
+</script>
+```
+
+One Stimulus controller reads that manifest and registers each entry. Because
+the catalog is server-side, the manifest differs per page — a page with no
+chart never advertises `plot_chart`.
+
 ## Architecture
 
 One body, many mouths. The domain models hold all the logic; every surface is thin.
