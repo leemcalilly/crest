@@ -192,15 +192,22 @@ if any controller assigns to a reserved Stimulus property.
 ## Try it yourself — the repeatable test
 
 This is the sequence in the demo video, and it is also how anyone can verify the
-entry. It needs no setup: in ChatGPT, ask it to open **crest.soccer** in its
-browser and tell you what tools the site offers, then work down the list.
+entry. It needs no setup. [crest.soccer/tools](https://crest.soccer/tools) has a
+button that copies the whole thing as one prompt; paste it into ChatGPT.
+
+> Open crest.soccer in a visible browser window — I want to watch the page while
+> you work, so do not use a background or headless browser.
+>
+> Then use the site's own WebMCP tools to work through these steps in order,
+> telling me what changed on screen at each one.
 
 Everything below happens in the one chart at the top of the page. Nothing is
-clicked.
+clicked. The **visible browser** instruction matters: without it the agent may
+do the work somewhere you cannot see, which defeats the point.
 
 | # | Ask | What should happen | Tool |
 |---|---|---|---|
-| 1 | *"Open crest.soccer and tell me what tools this site gives you."* | Eight tools listed — four read, four act on the page | discovery |
+| 1 | *"Tell me what tools this site gives you."* | Eight tools listed — four read the record, four work on the page | discovery |
 | 2 | *"Were they actually any good in the seventies, or just playing a lot?"* | The 24 cycle bars redraw from match counts to win rate | `plot_chart` |
 | 3 | *"What about goal difference?"* | Half the timeline turns red — the United States used to lose on aggregate, and stopped | `plot_chart` |
 | 4 | *"Who do they play the most?"* | The same panel becomes a ranking of opponents. Mexico, 76 matches | `plot_chart` |

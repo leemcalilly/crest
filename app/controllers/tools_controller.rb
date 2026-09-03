@@ -1,8 +1,16 @@
 class ToolsController < ApplicationController
-  # The repeatable test. Each entry is the prompt a person types and what they
-  # should see happen. Kept in Ruby so a test can hold it to the real catalog.
-  TRY_IT = [
-    [ "Open crest.soccer in a visible browser window and tell me what tools this site gives you.",
+  # The repeatable test. One prompt, eight steps. Kept in Ruby so the copy
+  # button, the page, and the submission can never drift apart.
+  INTRO = <<~TEXT.strip
+    Open crest.soccer in a visible browser window — I want to watch the page while
+    you work, so do not use a background or headless browser.
+
+    Then use the site's own WebMCP tools to work through these steps in order,
+    telling me what changed on screen at each one.
+  TEXT
+
+  STEPS = [
+    [ "Tell me what tools this site gives you.",
       "Eight tools on the homepage: four read the record, four work on the page." ],
     [ "Were they actually any good in the seventies, or just playing a lot?",
       "The 24 cycle bars redraw from match counts to win rate. <em>plot_chart</em>" ],
@@ -20,8 +28,14 @@ class ToolsController < ApplicationController
       "The 1939&ndash;1950 bar lights up: twelve years, no World Cup. <em>highlight_cycle</em>" ]
   ].freeze
 
+  def self.full_prompt
+    numbered = STEPS.each_with_index.map { |(ask, _), i| "#{i + 1}. #{ask}" }
+    "#{INTRO}\n\n#{numbered.join("\n")}"
+  end
+
   def show
     @tools = ModelContext::Manifest.new(page: "home").tools
-    @try_it = TRY_IT
+    @steps = STEPS
+    @full_prompt = self.class.full_prompt
   end
 end

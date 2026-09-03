@@ -80,31 +80,34 @@
   <hr class="rule" style="margin-top: 24px;">
 </section>
 
-<section style="padding: 34px 0 0;">
+<section style="padding: 34px 0 0;" data-controller="clipboard"
+         data-clipboard-text-value="<%= @full_prompt %>">
   <hr class="rule">
-  <div style="display: flex; align-items: baseline; justify-content: space-between; gap: 20px; padding: 18px 0 6px; flex-wrap: wrap;">
+  <div style="display: flex; align-items: baseline; justify-content: space-between; gap: 20px; padding: 18px 0 10px; flex-wrap: wrap;">
     <h2 class="serif" style="font-weight: 700; font-size: 26px; margin: 0;">Try it yourself</h2>
-    <div class="cap">Eight prompts &middot; about three minutes</div>
+    <div style="display: flex; align-items: center; gap: 16px;">
+      <span class="cap">One prompt &middot; eight steps</span>
+      <button type="button" class="copy" data-action="clipboard#copy" title="Copy the whole test as one prompt">
+        <svg width="13" height="13" viewBox="0 0 20 20" fill="none" stroke="currentColor"
+             stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <rect x="7" y="7" width="10" height="10" rx="1.5"></rect>
+          <path d="M13 4.5H4.5A1.5 1.5 0 0 0 3 6v8.5"></path>
+        </svg>
+        <span data-clipboard-target="label">Copy the prompt</span>
+      </button>
+    </div>
   </div>
+
   <p style="font-family: var(--mono); font-size: 12px; line-height: 2; color: var(--ink-soft); margin: 0; max-width: 760px;">
-    The simplest test needs no setup at all. In ChatGPT, ask it to open
-    <strong>crest.soccer</strong> in its browser and tell you what tools the site offers.
-    Then work down this list. Everything below happens in the chart at the top of the
-    page &mdash; you should not have to click anything.
+    Copy the prompt and paste it into ChatGPT. It asks for a <strong>visible browser window</strong>,
+    because otherwise the work happens somewhere you cannot watch &mdash; and watching the page move
+    is the whole point. Everything below happens in the chart at the top of the site.
   </p>
 
   <ol class="tryit">
-    <% @try_it.each do |prompt, expectation| %>
-      <li data-controller="clipboard" data-clipboard-text-value="<%= prompt %>">
-        <span class="ask">&ldquo;<%= prompt %>&rdquo;</span>
-        <button type="button" class="copy" data-action="clipboard#copy" title="Copy this prompt">
-          <svg width="13" height="13" viewBox="0 0 20 20" fill="none" stroke="currentColor"
-               stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-            <rect x="7" y="7" width="10" height="10" rx="1.5"></rect>
-            <path d="M13 4.5H4.5A1.5 1.5 0 0 0 3 6v8.5"></path>
-          </svg>
-          <span data-clipboard-target="label">Copy</span>
-        </button>
+    <% @steps.each do |ask, expectation| %>
+      <li>
+        <span class="ask">&ldquo;<%= ask %>&rdquo;</span>
         <span class="saw"><%= expectation.html_safe %></span>
       </li>
     <% end %>
