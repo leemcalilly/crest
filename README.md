@@ -7,7 +7,7 @@ cycles. 795 matches, 1885 to 2026, built entirely from open data — and it hand
 its tools to the agent looking at the page.
 
 Built for the [WebMCP Challenge](https://openai.com/webmcp-challenge/) — the full
-entry, including the demo video, is in [SUBMISSION.md](SUBMISSION.md).
+entry, including the demo video, is in [WEBMCP-CHALLENGE.md](WEBMCP-CHALLENGE.md).
 
 ## What WebMCP does here
 

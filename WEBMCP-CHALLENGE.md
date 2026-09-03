@@ -5,33 +5,56 @@
 | **Live site** | https://crest.soccer |
 | **Repository** | https://github.com/leemcalilly/crest |
 | **License** | [MIT](LICENSE) |
+| **The `registerTool` call** | [`model_context_controller.js#L79`](https://github.com/leemcalilly/crest/blob/24374df5397651612236cfd76c7753ef54bec191/app/javascript/controllers/model_context_controller.js#L79-L99) |
+| **Tool catalog (Ruby)** | [`app/models/model_context/`](https://github.com/leemcalilly/crest/blob/24374df5397651612236cfd76c7753ef54bec191/app/models/model_context/manifest.rb) |
+| **Try it in one prompt** | [crest.soccer/tools](https://crest.soccer/tools) |
 | **Demo video** | *(YouTube link — pending)* |
 | **Built by** | Lee McAlilly |
 
-> **Status: draft.** This file is the working copy of the Devpost entry. It is
-> edited in git until submission, so the answers below and the ones on the form
-> stay identical.
-
 ---
 
-## What it is
+## What we actually built: a dashboard that assembles itself
 
-crest is a time machine for the United States men's national soccer team. Every
-match it has played — 795 of them, from 1885 to the 2026 World Cup —
-organized not by decade but by **World Cup cycle**, the four years leading to and
-including each tournament.
+The interesting thing here is not the soccer data. It is what happens to a chart
+when an agent can draw on it.
 
-That is how the sport actually measures time, and it is the difference between a
-table of numbers and a story. Sorted by decade, the 1990s are a large bar. Sorted
-by cycle, the 1994 cycle is a *spike* — 97 matches in four years, the run-up to a
-home World Cup — and the line goes flat at about 60 a cycle forever after. One
-choice of unit surfaces a fact the other hides.
+crest has one visualization panel. I did not build a screen for "opponents by
+win rate", or "host cities", or "goal difference against Mexico across a
+century". I built a dataset, a small set of WebMCP tools, and a surface those
+tools can paint on. **Everything else assembles itself in response to whatever
+the person asks.**
 
----
+Ask *"were they any good in the seventies, or just playing a lot?"* and the
+twenty-four cycle bars redraw from match counts to win rate. Ask about goal
+difference and half the timeline turns red. Ask who they play the most and the
+same panel becomes a ranking of opponents. None of those views is a page we
+designed. They are compositions the agent makes at the moment of the question,
+out of parts I exposed.
+
+That is a just-in-time interface — a **malleable dashboard**. The
+old bargain was that a designer anticipates every question and builds a screen
+for each one, and anything unanticipated becomes a support ticket or a CSV
+export. Here the person asks, and the interface arrives. It is not hard to
+imagine where this goes: analytics, admin panels, anything today buried under
+forty saved views that still miss the one you want.
+
+What I have built is a small demonstration — green shoots. But it is a complete
+one, end to end, and the mechanism is all there.
+
+## Why us, and why this data
+
+I have followed the United States men's team since the 1994 World Cup —
+the tournament that arrives, in this app, as the tallest bar on the timeline: 97
+matches in the four years of building for a home World Cup, a spike that never
+repeats. Picking a dataset you have cared about for thirty years is how you
+notice that decades are the wrong unit and World Cup cycles are the right one.
+That decision is what makes the chart worth handing to an agent at all.
 
 ## Why this use case is a strong fit for WebMCP
 
-A stats site is a browsing problem, not a lookup problem. The interesting
+crest holds every match the United States men's team has played — 795 of them,
+from 1885 to the 2026 World Cup — organised by World Cup cycle rather than by
+decade. A stats site is a browsing problem, not a lookup problem. The interesting
 questions are comparative and spatial — *which era was this, how does it compare
 to the one before, show me where that sits* — and the answers live in a visual
 object: a 24-bar timeline of cycles.
@@ -65,6 +88,22 @@ The capability is disclosed, not hidden.
 ---
 
 ## What people and agents can do together that was difficult or impossible before
+
+**A view nobody designed in advance.** This is the one to look at first. Every
+other item below is a nice primitive; this is the thing that feels new.
+
+The chart is a surface, and `plot_chart` lets the agent choose what goes on it —
+which dataset, which measure, narrowed to which opponent. That is four choices
+the agent composes at the moment of the question, and most of the resulting
+combinations were never a screen anyone built. "Goal difference against Mexico,
+cycle by cycle" is a view that exists for about four seconds because somebody
+wondered about it out loud.
+
+Before WebMCP, the answer to an unanticipated question was a paragraph, a
+screenshot, or a CSV. The interface itself was fixed at design time. Now the
+person asks and the interface arrives — which is a different bargain than
+software has offered before, and the reason this feels like more than a
+convenience.
 
 **Shared attention.** Before WebMCP, an agent looking at a page could describe it
 to you and you could describe it back. Neither could point. `highlight_cycle` lets
@@ -262,3 +301,19 @@ docker run -p 3000:80 -e SECRET_KEY_BASE=$(openssl rand -hex 32) \
 
 To see the tools, open the site in ChatGPT's desktop browser, or in Chrome with
 `chrome://flags/#enable-webmcp-testing` enabled.
+
+---
+
+## Requirements checklist
+
+| Requirement | Where |
+|---|---|
+| Working live URL, usable in ChatGPT's browser | https://crest.soccer |
+| Text description: why WebMCP fits | [Why this use case is a strong fit](#why-this-use-case-is-a-strong-fit-for-webmcp) |
+| Text description: how it improves the experience | [How it creates a better user experience](#how-it-creates-a-better-user-experience) |
+| Text description: what people and agents can do together | [What people and agents can do together](#what-people-and-agents-can-do-together-that-was-difficult-or-impossible-before) |
+| Text description: how WebMCP was implemented | [How WebMCP was implemented](#how-webmcp-was-implemented) |
+| Public repository, open source | github.com/leemcalilly/crest — MIT, detected by GitHub |
+| All source, assets and instructions | This repo. Data ships unmodified in `db/source`; running instructions below |
+| Tool registration with schema and execution | [The registration call](#the-registration-call) |
+| Demo video, under 3 minutes, public, with audio | *(pending)* |
