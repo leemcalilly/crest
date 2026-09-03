@@ -27,7 +27,7 @@ the person asks.**
 Ask *"were they any good in the seventies, or just playing a lot?"* and the
 twenty-four cycle bars redraw from match counts to win rate. Ask about goal
 difference and half the timeline turns red. Ask who they play the most and the
-same panel becomes a ranking of opponents. None of those views is a page we
+same panel becomes a ranking of opponents. None of those views is a page I
 designed. They are compositions the agent makes at the moment of the question,
 out of parts I exposed.
 
@@ -41,7 +41,7 @@ forty saved views that still miss the one you want.
 What I have built is a small demonstration — green shoots. But it is a complete
 one, end to end, and the mechanism is all there.
 
-## Why us, and why this data
+## Why me, and why this data
 
 I have followed the United States men's team since the 1994 World Cup —
 the tournament that arrives, in this app, as the tallest bar on the timeline: 97
