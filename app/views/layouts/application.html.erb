@@ -13,10 +13,14 @@
     <%= stylesheet_link_tag :app, "data-turbo-track": "reload" %>
     <%= javascript_importmap_tags %>
     <%= yield :head %>
-    <script type="application/json" id="model-context-manifest"><%== ModelContext::Manifest.new(page: controller_name).to_json %></script>
   </head>
 
   <body data-controller="model-context">
+    <%# This must live in the body. Turbo Drive replaces the body on every
+        visit but leaves the head alone, so a manifest in the head would be
+        frozen at the first page loaded and page scoping would never apply. %>
+    <script type="application/json" id="model-context-manifest"><%== ModelContext::Manifest.new(page: controller_name).to_json %></script>
+
     <div class="accent" aria-hidden="true"></div>
 
     <div class="wrap">

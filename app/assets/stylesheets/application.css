@@ -268,11 +268,33 @@ footer .credit { font-family: var(--mono); font-size: 11px; line-height: 1.9; co
 .tryit li {
   counter-increment: step;
   display: grid;
-  grid-template-columns: 28px minmax(0, 1fr);
+  grid-template-columns: 28px minmax(0, 1fr) auto;
   gap: 4px 14px;
+  align-items: baseline;
   padding: 14px 0;
   border-top: 1px solid var(--rule-faint);
 }
+.tryit .saw { grid-column: 2 / -1; }
+
+.copy {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: none;
+  border: 1px solid var(--rule);
+  color: var(--ink-faint);
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  padding: 6px 10px;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: border-color 140ms ease, color 140ms ease;
+}
+.copy:hover { border-color: var(--ink); color: var(--ink); }
+.copy svg { flex: none; }
+li.copied .copy { border-color: var(--green); color: var(--green); }
 .tryit li::before {
   content: counter(step);
   grid-row: span 2;
@@ -316,6 +338,8 @@ footer .credit { font-family: var(--mono); font-size: 11px; line-height: 1.9; co
   .split > .divided { padding-left: 0 !important; }
 
   .statline .num { font-size: 26px !important; }
+  .tryit li { grid-template-columns: 28px minmax(0, 1fr); }
+  .tryit .copy { grid-column: 2; justify-self: start; margin-top: 4px; }
   h1.display { font-size: 34px; }
   .chart-hint { display: none; }
 }

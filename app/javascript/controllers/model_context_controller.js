@@ -23,6 +23,7 @@ export default class extends Controller {
 
     const { tools } = JSON.parse(manifest.textContent)
     this.toolCount = 0
+    this.registered = []
 
     // Register each tool independently. registerTool may return a promise, a
     // value, or nothing at all depending on the build, so never gate the
@@ -32,6 +33,7 @@ export default class extends Controller {
       try {
         const result = this.register(tool)
         this.toolCount += 1
+        this.registered.push(tool.name)
         if (result && typeof result.catch === "function") {
           result.catch((error) => this.failed(tool, error))
         }
@@ -56,8 +58,19 @@ export default class extends Controller {
     this.report(this.toolCount > 0 ? `${this.toolCount} tools ready` : "unavailable")
   }
 
+  // Page-scoped tools must go when the page does. Turbo swaps the body without
+  // a reload, so without this the previous page's tools stay registered and the
+  // agent is offered tools the new page cannot run — a page with no chart would
+  // still advertise plot_chart. The AbortSignal alone did not do it, so each
+  // tool is also unregistered by name.
   disconnect() {
-    // Page-scoped tools unregister themselves on Turbo navigation.
+    const context = this.modelContext
+    if (context && typeof context.unregisterTool === "function") {
+      for (const name of this.registered || []) {
+        try { context.unregisterTool(name) } catch (error) { /* already gone */ }
+      }
+    }
+    this.registered = []
     this.aborter?.abort()
   }
 
@@ -266,6 +279,11 @@ export default class extends Controller {
       chart_showing: this.chart ? `${this.chart.title} by ${this.chart.label}` : "World Cup cycles by matches played",
       chart_filtered_to: this.chart?.opponent || null
     }
+  }
+
+  bars() {
+    if (!this.hasHistogramTarget) return []
+    return Array.from(this.histogramTarget.children)
   }
 
   barFor(slug) {
