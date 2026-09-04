@@ -152,8 +152,33 @@ export default class extends Controller {
     if (!response.ok) {
       return { error: `No cycle named "${slug}". Call list_cycles for the slugs.` }
     }
+
+    // Turbo.visit returns before anything reaches the screen, so reporting
+    // success here would describe a page the reader cannot see yet. Start
+    // listening first, then visit, then answer once the new page has loaded.
+    const arrived = this.navigated()
     Turbo.visit(path)
-    return { moved_to: slug, note: "The reader's page is now showing this cycle." }
+
+    const loaded = await arrived
+    return loaded
+      ? { moved_to: slug, note: "The reader's page is now showing this cycle." }
+      : { moved_to: slug, note: "Navigation started but did not confirm within 5 seconds." }
+  }
+
+  // Resolves true when Turbo finishes rendering, false if it takes too long.
+  // The timeout matters: a navigation that never lands would otherwise leave
+  // the agent waiting on this tool forever.
+  navigated(timeout = 5000) {
+    return new Promise((resolve) => {
+      const settle = (loaded) => {
+        clearTimeout(timer)
+        document.removeEventListener("turbo:load", onLoad)
+        resolve(loaded)
+      }
+      const onLoad = () => settle(true)
+      const timer = setTimeout(() => settle(false), timeout)
+      document.addEventListener("turbo:load", onLoad, { once: true })
+    })
   }
 
   // Highlighting needs a cycle bar on screen. If the chart is showing

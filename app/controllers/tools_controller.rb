@@ -24,8 +24,8 @@ class ToolsController < ApplicationController
       "Back to cycles, narrowed to one rivalry across a century." ],
     [ "Take me to the cycle that ended at the home World Cup.",
       "The page navigates to 1994. <em>set_cycle</em>" ],
-    [ "Which cycle had no tournament at all?",
-      "The 1939&ndash;1950 bar lights up: twelve years, no World Cup. <em>highlight_cycle</em>" ]
+    [ "Which cycle is twelve years long, and why?",
+      "The 1939&ndash;1950 bar lights up: twelve years between tournaments, because the 1942 and 1946 World Cups were cancelled for the war. <em>highlight_cycle</em>" ]
   ].freeze
 
   def self.full_prompt
