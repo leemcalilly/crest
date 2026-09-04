@@ -255,7 +255,7 @@ them, and [a test](test/webmcp_challenge_test.rb) fails if the two drift apart.
 | 4 | *"Who do they play the most?"* | The same panel becomes a ranking of opponents. Mexico, 76 matches. | `plot_chart` |
 | 5 | *"And where do they play?"* | Host cities. Mexico City leads with 27, one ahead of Washington, D.C. | `plot_chart` |
 | 6 | *"Show me only the matches against Mexico, cycle by cycle."* | Back to cycles, narrowed to one rivalry across a century. | `plot_chart` |
-| 7 | *"Take me to the cycle that ended at the home World Cup."* | The page navigates to 1994. | `set_cycle` |
+| 7 | *"Take me to the cycle with the most matches."* | The page navigates to 1994: 97 matches, the run-up to a home World Cup | `set_cycle` |
 | 8 | *"Which cycle is twelve years long, and why?"* | The 1939–1950 bar lights up: twelve years between tournaments, because the 1942 and 1946 World Cups were cancelled for the war. | `highlight_cycle` |
 
 **If the chart does not move**, the agent is describing the page instead of using
