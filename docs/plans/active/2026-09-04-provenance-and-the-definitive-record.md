@@ -1,6 +1,6 @@
 # Provenance, and becoming the definitive record
 
-**Status:** Proposed · created 2026-09-04 · not started
+**Status:** Superseded · 2026-09-04 · the data model here is replaced by the `provable` gem, and the order of work now lives in the private planning repo. Phases 3–5 (research runs, the missing teams, provenance as a tool) remain valid as follow-ons once crest is on the gem.
 **Goal:** make every number on crest carry its own evidence, so the site can be
 trusted by a person and cited by an agent.
 
